@@ -38,7 +38,7 @@ export async function verifyToken(input: string) {
 }
 
 export async function getSession() {
-  const session = cookies().get("AUTH_SESSION_JOTREDEV")?.value;
+  const session = cookies().get("AUTH_SESSION_INTELINET")?.value;
   if (!session) return null;
   return await verifyToken(session);
 }
@@ -50,7 +50,7 @@ export async function setSession(user: NewUser) {
     expires: expiresInOneDay.toISOString(),
   };
   const encryptedSession = await signToken(session);
-  cookies().set("AUTH_SESSION_JOTREDEV", encryptedSession, {
+  cookies().set("AUTH_SESSION_INTELINET", encryptedSession, {
     expires: expiresInOneDay,
     httpOnly: true,
     secure: true,

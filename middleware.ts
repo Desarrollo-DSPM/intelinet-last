@@ -6,7 +6,7 @@ const protectedRoutes = ["/dashboard"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const sessionCookie = request.cookies.get("AUTH_SESSION_JOTREDEV");
+  const sessionCookie = request.cookies.get("AUTH_SESSION_INTELINET");
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
   );
@@ -24,7 +24,7 @@ export async function middleware(request: NextRequest) {
       const expiresInOneDay = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
       res.cookies.set({
-        name: "AUTH_SESSION_JOTREDEV",
+        name: "AUTH_SESSION_INTELINET",
         value: await signToken({
           ...parsed,
           expires: expiresInOneDay.toISOString(),
@@ -36,7 +36,7 @@ export async function middleware(request: NextRequest) {
       });
     } catch (error) {
       console.error("Error en la actualización de la sesión:", error);
-      res.cookies.delete("AUTH_SESSION_JOTREDEV");
+      res.cookies.delete("AUTH_SESSION_INTELINET");
       if (isProtectedRoute) {
         return NextResponse.redirect(new URL("/auth/login", request.url));
       }

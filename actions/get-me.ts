@@ -6,7 +6,7 @@ import { verifyToken } from "@/lib/auth/session";
 
 // Obtener el usuario actual
 export async function getUser() {
-  const sessionCookie = cookies().get("AUTH_SESSION_JOTREDEV");
+  const sessionCookie = cookies().get("AUTH_SESSION_INTELINET");
   if (!sessionCookie || !sessionCookie.value) {
     return null;
   }
