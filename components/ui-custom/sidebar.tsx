@@ -11,7 +11,6 @@ import {
   FileText,
   GitBranch,
   House,
-  Puzzle,
   Users,
 } from "lucide-react";
 
@@ -86,19 +85,6 @@ export const Sidebar = () => {
                   >
                     <Building2 className="h-4 w-4" />
                     <span>Departamentos</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/dashboard/modules"
-                    className={cn(
-                      "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                      pathname.startsWith("/dashboard/modules") &&
-                        "bg-secondary font-medium"
-                    )}
-                  >
-                    <Puzzle className="h-4 w-4" />
-                    <span>Módulos</span>
                   </Link>
                 </li>
               </>
