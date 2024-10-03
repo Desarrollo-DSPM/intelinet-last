@@ -23,35 +23,33 @@ import { toast } from "sonner";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { formSchemaEditRolUser } from "@/types/user";
 import { Loader } from "lucide-react";
-import { useUser } from "@/hooks/use-user";
+import { User } from "@/lib/db/schema";
 
-export function EditRoleUserForm() {
+interface EditRoleUserFormProps {
+  data: User;
+}
+
+export function EditRoleUserForm({ data }: EditRoleUserFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
-  const { user } = useUser();
 
   const form = useForm<z.infer<typeof formSchemaEditRolUser>>({
     resolver: zodResolver(formSchemaEditRolUser),
     defaultValues: {
       role:
-        user &&
+        data &&
         (["default", "admin", "support"] as const).includes(
-          user.role as "default" | "admin" | "support"
+          data.role as "default" | "admin" | "support"
         )
-          ? (user.role as "default" | "admin" | "support")
+          ? (data.role as "default" | "admin" | "support")
           : "default",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchemaEditRolUser>) {
     setIsLoading(true);
-    if (!user) {
-      toast.error("Usuario no encontrado");
-      setIsLoading(false);
-      return;
-    }
 
-    const res = await editRolUser({ values, id: user.id });
+    const res = await editRolUser({ values, id: data.id });
 
     if (res?.response === "success") {
       router.refresh();

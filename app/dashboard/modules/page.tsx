@@ -1,4 +1,4 @@
-import { getAllUsers } from "@/actions/users/get-users";
+import { getAllModules } from "@/actions/modules/get-all-modules";
 
 import { DataTable } from "./_components/data-table";
 import { columns } from "./_components/columns";
@@ -12,14 +12,15 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { ButtonCreateModule } from "@/components/ui-custom/modals/button-create-module";
 
-const UsersPage = async () => {
-  const { data } = await getAllUsers();
+const ModulesPage = async () => {
+  const { data } = await getAllModules();
 
   return (
     <div className="w-full">
       <div className="flex flex-col md:flex-row items-center justify-between gap-5 mb-10">
-        <Title>Usuarios</Title>
+        <Title>Módulos</Title>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -27,7 +28,7 @@ const UsersPage = async () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Usuarios</BreadcrumbPage>
+              <BreadcrumbPage>Módulos</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -35,12 +36,13 @@ const UsersPage = async () => {
       {data.length > 0 ? (
         <DataTable data={data} columns={columns} />
       ) : (
-        <p className="text-center my-20 text-muted-foreground">
-          No hay usuarios
-        </p>
+        <div className="flex flex-col items-center gap-5">
+          <p className="text-center text-muted-foreground">No hay módulos</p>
+          <ButtonCreateModule />
+        </div>
       )}
     </div>
   );
 };
 
-export default UsersPage;
+export default ModulesPage;

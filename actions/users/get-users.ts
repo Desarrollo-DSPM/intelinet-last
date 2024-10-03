@@ -20,6 +20,7 @@ export const getAllUsers = async () => {
         image: users.image,
         dateOfBirth: users.dateOfBirth,
         dateOfEntry: users.dateOfEntry,
+        modules: users.modules,
         createdAt: users.createdAt,
         updatedAt: users.updatedAt,
         isActive: users.isActive,

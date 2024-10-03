@@ -9,7 +9,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
-import { registerUser } from "@/actions/register-user";
+import { registerUser } from "@/actions/users/register-user";
 import { formSchemaRegister } from "@/types/user";
 
 import { Button } from "@/components/ui/button";

@@ -5,19 +5,31 @@ import { usePathname } from "next/navigation";
 
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
-import { Building2, GitBranch, House, Users } from "lucide-react";
+import {
+  Building2,
+  CircleDot,
+  FileText,
+  GitBranch,
+  House,
+  Puzzle,
+  Users,
+} from "lucide-react";
 
 import { Logo } from "@/components/ui-custom/logo";
 
 export const Sidebar = () => {
-  const { auth, isOpenMenu, setIsOpenMenu } = useAuth();
+  const { auth, isOpenMenu, setIsOpenMenu } = useAuth() as {
+    auth: { role: string; modules: string[] };
+    isOpenMenu: boolean;
+    setIsOpenMenu: (isOpen: boolean) => void;
+  };
   const pathname = usePathname();
 
   return (
     <>
       <aside
         className={cn(
-          "w-64 xl:w-2/12 h-full border-r border-border fixed xl:sticky left-0 top-0 xl:translate-x-0 bg-background p-5 flex flex-col justify-between z-50 transition-transform duration-300 ease-in-out",
+          "w-64 xl:w-2/12 h-full border-r border-border fixed xl:sticky left-0 top-0 xl:translate-x-0 bg-background p-5 flex flex-col justify-between z-50 transition-transform duration-300 ease-in-out overflow-auto",
           isOpenMenu ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -80,6 +92,57 @@ export const Sidebar = () => {
                     <span>Departamentos</span>
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/dashboard/modules"
+                    className={cn(
+                      "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
+                      pathname.startsWith("/dashboard/modules") &&
+                        "bg-secondary font-medium"
+                    )}
+                  >
+                    <Puzzle className="h-4 w-4" />
+                    <span>Módulos</span>
+                  </Link>
+                </li>
+              </>
+            )}
+            <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
+              Coordinación de inteligencia
+            </li>
+            <li>
+              <Link
+                href="/dashboard/coordinacion/init"
+                className={cn(
+                  "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
+                  pathname.startsWith("/dashboard/coordinacion/init") &&
+                    "bg-secondary font-medium"
+                )}
+              >
+                <FileText className="h-4 w-4" />
+                <span>Formato de inicio</span>
+              </Link>
+            </li>
+            {auth?.modules.length > 0 && (
+              <>
+                <li className="my-4 ml-4 text-xs uppercase font-bold text-muted-foreground">
+                  Grupos especiales
+                </li>
+                {auth?.modules.includes("uap") && (
+                  <li>
+                    <Link
+                      href="/dashboard/coordinacion/uap"
+                      className={cn(
+                        "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
+                        pathname.startsWith("/dashboard/coordinacion/uap") &&
+                          "bg-secondary font-medium"
+                      )}
+                    >
+                      <CircleDot className="h-4 w-4" />
+                      <span>UAP</span>
+                    </Link>
+                  </li>
+                )}
               </>
             )}
           </ul>

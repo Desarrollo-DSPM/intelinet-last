@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
+import { redirect } from "next/navigation";
 
-import { getUserById } from "@/actions/users/get-user";
+import { getModuleById } from "@/actions/modules/get-module-by-id";
+import { EditModuleForm } from "@/components/ui-custom/forms/edit-module-form.tsx";
 
-import { NavUserDetails } from "@/components/ui-custom/nav-user-details";
 import { Title } from "@/components/ui-custom/title";
 import {
   Breadcrumb,
@@ -13,21 +13,19 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-const UserDetailsLayout = async ({
-  children,
+const EditDepartmentPage = async ({
   params,
 }: {
-  children: ReactNode;
-  params: { userId: string };
+  params: { moduleId: string };
 }) => {
-  const { data } = await getUserById(Number(params.userId));
+  const { data } = await getModuleById(Number(params.moduleId));
 
-  if (!data) return null;
+  if (!data) return redirect("/dashboard/modules");
 
   return (
-    <div>
+    <div className="w-full">
       <div className="flex flex-col md:flex-row items-center justify-between gap-5 mb-10">
-        <Title>Editar usuario</Title>
+        <Title>Editar módulo</Title>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -35,19 +33,17 @@ const UserDetailsLayout = async ({
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/dashboard/users">Usuarios</BreadcrumbLink>
+              <BreadcrumbLink href="/dashboard/modules">Módulos</BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>{data?.name}</BreadcrumbPage>
+              <BreadcrumbPage>Editar módulo</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <NavUserDetails data={data} />
-      {children}
+      <EditModuleForm data={data} />
     </div>
   );
 };
 
-export default UserDetailsLayout;
+export default EditDepartmentPage;

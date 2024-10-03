@@ -28,7 +28,11 @@ const AuthProvider = ({
   const pathname = usePathname();
 
   useEffect(() => {
-    const adminRoutes = ["/dashboard/users"];
+    const adminRoutes = [
+      "/dashboard/users",
+      "/dashboard/departments",
+      "/dashboard/modules",
+    ];
     setAuth(initialUser);
 
     // Rutas protegidas

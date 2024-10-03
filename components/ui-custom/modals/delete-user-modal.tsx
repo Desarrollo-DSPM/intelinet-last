@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { deleteUser } from "@/actions/delete-user";
+import { deleteUser } from "@/actions/users/delete-user";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 

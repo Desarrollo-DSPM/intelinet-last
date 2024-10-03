@@ -44,9 +44,6 @@ export const columns: ColumnDef<UserWithDepartment>[] = [
         <p>{row.getValue("employeeNumber")}</p>
       </div>
     ),
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
   },
   {
     accessorKey: "name",

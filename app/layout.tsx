@@ -3,10 +3,9 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { AuthProvider } from "@/providers/auth-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
-import { getUser } from "@/actions/get-me";
+import { getUser } from "@/actions/users/get-me";
 import { Toaster } from "@/components/ui/sonner";
 import NextTopLoader from "nextjs-toploader";
-import { UserProvider } from "@/providers/user-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -37,18 +36,16 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider userPromise={userPromise}>
-          <UserProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-              <NextTopLoader showSpinner={false} />
-              <Toaster />
-            </ThemeProvider>
-          </UserProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <NextTopLoader showSpinner={false} />
+            <Toaster />
+          </ThemeProvider>
         </AuthProvider>
       </body>
     </html>

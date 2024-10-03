@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 
-import { editUser } from "@/actions/edit-user";
+import { editUser } from "@/actions/users/edit-user";
 import { formSchemaEditUser } from "@/types/user";
 
 import { Button } from "@/components/ui/button";
@@ -31,15 +31,16 @@ import {
 } from "@/components/ui/select";
 
 import { Loader } from "lucide-react";
-import { Department } from "@/lib/db/schema";
+import { Department, User } from "@/lib/db/schema";
 import { getAllDepartments } from "@/actions/departments/get-all-departments";
-import { useUser } from "@/hooks/use-user";
 
-export const EditUserForm = () => {
+interface EditUserFormProps {
+  data: User;
+}
+
+export const EditUserForm = ({ data }: EditUserFormProps) => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const { user } = useUser();
 
   const router = useRouter();
 
@@ -58,11 +59,11 @@ export const EditUserForm = () => {
   const form = useForm<z.infer<typeof formSchemaEditUser>>({
     resolver: zodResolver(formSchemaEditUser),
     defaultValues: {
-      departmentId: user?.departmentId ?? 0,
-      name: user?.name ?? "",
-      lastname: user?.lastname ?? "",
-      employeeNumber: user?.employeeNumber ?? 0,
-      email: user?.email ?? "",
+      departmentId: data?.departmentId ?? 0,
+      name: data?.name ?? "",
+      lastname: data?.lastname ?? "",
+      employeeNumber: data?.employeeNumber ?? 0,
+      email: data?.email ?? "",
       password: "",
     },
   });
@@ -70,13 +71,7 @@ export const EditUserForm = () => {
   async function onSubmit(values: z.infer<typeof formSchemaEditUser>) {
     setIsLoading(true);
 
-    if (!user) {
-      toast.error("Usuario no encontrado");
-      setIsLoading(false);
-      return;
-    }
-
-    const res = await editUser({ values, id: user.id });
+    const res = await editUser({ values, id: data.id });
 
     if (res?.response === "success") {
       router.refresh();
