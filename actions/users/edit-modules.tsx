@@ -6,7 +6,7 @@ import { db } from "@/lib/db/db";
 import { User, users } from "@/lib/db/schema";
 
 interface EditModulesUserProps {
-  modules: string[];
+  modules: string;
   id: User["id"];
 }
 

@@ -18,11 +18,7 @@ import {
 import { Logo } from "@/components/ui-custom/logo";
 
 export const Sidebar = () => {
-  const { auth, isOpenMenu, setIsOpenMenu } = useAuth() as {
-    auth: { role: string; modules: string[] };
-    isOpenMenu: boolean;
-    setIsOpenMenu: (isOpen: boolean) => void;
-  };
+  const { auth, isOpenMenu, setIsOpenMenu } = useAuth();
   const pathname = usePathname();
 
   return (
@@ -123,28 +119,29 @@ export const Sidebar = () => {
                 <span>Formato de inicio</span>
               </Link>
             </li>
-            {auth?.modules.length > 0 && (
-              <>
-                <li className="my-4 ml-4 text-xs uppercase font-bold text-muted-foreground">
-                  Grupos especiales
-                </li>
-                {auth?.modules.includes("uap") && (
-                  <li>
-                    <Link
-                      href="/dashboard/coordinacion/uap"
-                      className={cn(
-                        "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                        pathname.startsWith("/dashboard/coordinacion/uap") &&
-                          "bg-secondary font-medium"
-                      )}
-                    >
-                      <CircleDot className="h-4 w-4" />
-                      <span>UAP</span>
-                    </Link>
+            {Array.isArray(JSON.parse(auth?.modules || "[]")) &&
+              JSON.parse(auth?.modules || "[]").length > 0 && (
+                <>
+                  <li className="my-4 ml-4 text-xs uppercase font-bold text-muted-foreground">
+                    Grupos especiales
                   </li>
-                )}
-              </>
-            )}
+                  {auth?.modules.includes("uap") && (
+                    <li>
+                      <Link
+                        href="/dashboard/coordinacion/uap"
+                        className={cn(
+                          "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
+                          pathname.startsWith("/dashboard/coordinacion/uap") &&
+                            "bg-secondary font-medium"
+                        )}
+                      >
+                        <CircleDot className="h-4 w-4" />
+                        <span>UAP</span>
+                      </Link>
+                    </li>
+                  )}
+                </>
+              )}
           </ul>
         </section>
       </aside>

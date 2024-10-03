@@ -29,7 +29,7 @@ async function seed() {
       password: passwordHash,
       role: "admin",
       dateOfEntry: new Date(),
-      modules: [],
+      modules: "[]",
       createdAt: new Date(),
       updatedAt: new Date(),
     },

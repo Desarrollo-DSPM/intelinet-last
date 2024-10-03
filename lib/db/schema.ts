@@ -7,7 +7,6 @@ import {
   int,
   tinyint,
   date,
-  json,
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
@@ -22,7 +21,7 @@ export const users = mysqlTable("users", {
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: text("password").notNull(),
   role: varchar("role", { length: 20 }).notNull().default("default"),
-  modules: json("modules").notNull(),
+  modules: text("modules").notNull(),
   image: varchar("image", { length: 255 }),
   dateOfBirth: timestamp("date_of_birth"),
   dateOfEntry: date("date_of_entry").notNull(),

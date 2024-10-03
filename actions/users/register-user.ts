@@ -53,7 +53,7 @@ export const registerUser = async ({ values, isAuth }: RegisterUserProps) => {
       role: "default",
       employeeNumber,
       dateOfEntry,
-      modules: [],
+      modules: "[]",
       createdAt: new Date(),
       updatedAt: new Date(),
     };

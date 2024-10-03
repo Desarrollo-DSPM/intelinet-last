@@ -12,19 +12,39 @@ interface EditModulesUserProps {
 }
 
 export const EditModulesUser = ({ data }: EditModulesUserProps) => {
-  const [modules, setModules] = useState<string[]>(data.modules as string[]);
+  const [modules, setModules] = useState<string[]>(() => {
+    try {
+      return data.modules ? JSON.parse(data.modules as unknown as string) : [];
+    } catch (error) {
+      console.error("Error al parsear los módulos:", error);
+      return [];
+    }
+  });
 
   const handleModuleChange = (module: string) => {
-    if (modules.includes(module)) {
-      setModules(modules.filter((m) => m !== module));
+    if (Array.isArray(modules)) {
+      if (modules.includes(module)) {
+        setModules(modules.filter((m) => m !== module));
+      } else {
+        setModules([...modules, module]);
+      }
     } else {
-      setModules([...modules, module]);
+      console.error("Los módulos no son array");
     }
   };
 
   useEffect(() => {
     (async () => {
-      await editModulesUser({ modules, id: data.id });
+      if (Array.isArray(modules)) {
+        await editModulesUser({
+          modules: JSON.stringify(modules),
+          id: data.id,
+        });
+      } else {
+        console.error(
+          "Los modulos no son array no se pueden guardar en la base de datos"
+        );
+      }
     })();
   }, [modules, data.id]);
 
