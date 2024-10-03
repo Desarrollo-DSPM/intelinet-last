@@ -38,10 +38,41 @@ export const departments = mysqlTable("departments", {
   isActive: tinyint("is_active").default(1),
 });
 
-export const userRelations = relations(users, ({ one }) => ({
+export const userRelations = relations(users, ({ one, many }) => ({
   department: one(departments, {
     fields: [users.departmentId],
     references: [departments.id],
+  }),
+  initFormats: many(initFormats),
+  initFormatsSupport: many(initFormats),
+}));
+
+export const initFormats = mysqlTable("init_formats", {
+  id: int("id").primaryKey().autoincrement(),
+  userId: int("user_id").notNull().references(() => users.id),
+  group: varchar("group", { length: 255 }).notNull(),
+  supportUserId: varchar("support_user_id", { length: 255 }).references(() => users.id),
+  district: varchar("district", { length: 255 }).notNull(),
+  eventType: varchar("event_type", { length: 255 }).notNull(),
+  eventDate: date("event_date").notNull(),
+  location: varchar("location", { length: 255 }).notNull(),
+  physicalVictim: varchar("physical_victim", { length: 255 }),
+  moralVictim: varchar("moral_victim", { length: 255 }),
+  callFolios: text("call_folios").default("[]"),
+  iphFolios: text("iph_folios").default("[]"),
+  victimInv: int("victim_inv").default(0),
+  witnessInv: int("witness_inv").default(0),
+  invAccused: int("inv_accused").default(0),
+});
+
+export const initFormatsRelations = relations(initFormats, ({ one }) => ({
+  user: one(users, {
+    fields: [initFormats.userId],
+    references: [users.id],
+  }),
+  supportUser: one(users, {
+    fields: [initFormats.supportUserId],
+    references: [users.id],
   }),
 }));
 
@@ -52,3 +83,5 @@ export type NewDepartment = typeof departments.$inferInsert;
 export type UserWithDepartment = Omit<User, "departmentId" | "password"> & {
   department: string | null;
 };
+export type InitFormat = typeof initFormats.$inferSelect;
+export type NewInitFormat = typeof initFormats.$inferInsert;
