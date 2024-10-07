@@ -1,4 +1,4 @@
-import { CreateFormatoInicioForm } from "@/components/ui-custom/forms/create-formato-inicio-form";
+import { CreateInitFormatForm } from "@/components/ui-custom/forms/create-init-format-form";
 import { Title } from "@/components/ui-custom/title";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
@@ -20,7 +20,7 @@ export default function initPage() {
                 </Breadcrumb>
             </div>
             <div className="w-full">
-                <CreateFormatoInicioForm />
+                <CreateInitFormatForm />
             </div>
         </div>
     )

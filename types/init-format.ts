@@ -11,7 +11,7 @@ export const formSchemaInitFormat = z.object({
     district: z.enum(["angel", "colon", "diana", "morelos", "villa", "zapata"], {
         message: "El distrito es requerido",
     }),
-    eventType: z.coerce.number().int().positive().min(1, {
+    eventTypeId: z.coerce.number().int().positive().min(1, {
         message: "El tipo de evento es requerido",
     }),
     eventDate: z.date({
@@ -22,7 +22,11 @@ export const formSchemaInitFormat = z.object({
     }),
     physicalVictim: z.string().optional(),
     moralVictim: z.string().optional(),
-    victimInv: z.coerce.number().int().positive().default(0),
-    witnessInv: z.coerce.number().int().positive().default(0),
-    invAccused: z.coerce.number().int().positive().default(0),
+    callFolios: z.string().optional(),
+    iphFolios: z.string().optional(),
+    victimInv: z.coerce.number().int().default(0),
+    witnessInv: z.coerce.number().int().default(0),
+    invAccused: z.coerce.number().int().default(0),
+    photoCount: z.coerce.number().int().default(0),
+    videoCount: z.coerce.number().int().default(0),
 });

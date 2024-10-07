@@ -1,10 +1,11 @@
 "use client";
 
 import { getAllEventTypes } from "@/actions/event-types/get-all-event-types";
+import { createInitFormat } from "@/actions/init-format/create-init-format";
 import { getAllUsers } from "@/actions/users/get-users";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,14 +17,15 @@ import { EventType, UserWithDepartment } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
 import { formSchemaInitFormat } from "@/types/init-format";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format, set } from "date-fns";
-import { CalendarIcon, Trash } from "lucide-react";
+import { format } from "date-fns";
+import { CalendarIcon, Loader, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
-export const CreateFormatoInicioForm = () => {
+export const CreateInitFormatForm = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [users, setUsers] = useState<UserWithDepartment[]>([]);
     const [eventTypes, setEventTypes] = useState<EventType[]>([]);
@@ -76,7 +78,7 @@ export const CreateFormatoInicioForm = () => {
             group: "",
             supportUserId: undefined,
             district: undefined,
-            eventType: undefined,
+            eventTypeId: undefined,
             eventDate: new Date(),
             location: "",
             physicalVictim: "",
@@ -84,13 +86,33 @@ export const CreateFormatoInicioForm = () => {
             victimInv: 0,
             witnessInv: 0,
             invAccused: 0,
+            photoCount: 0,
+            videoCount: 0,
         },
     });
 
     async function onSubmit(values: z.infer<typeof formSchemaInitFormat>) {
-        console.log(values);
-        console.log(JSON.stringify(callFolios));
-        console.log(JSON.stringify(iphFolios));
+        setIsLoading(true);
+
+        const valuesForm = {
+            ...values,
+            callFolios: JSON.stringify(callFolios),
+            iphFolios: JSON.stringify(iphFolios),
+        };
+
+        const res = await createInitFormat({ values: valuesForm });
+
+        if (res?.response === "success") {
+            router.refresh();
+            toast.success(res.message);
+            form.reset();
+        } else {
+            toast.error(res.message);
+        }
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 1000);
     }
 
   return (
@@ -138,7 +160,7 @@ export const CreateFormatoInicioForm = () => {
                             <FormItem>
                                 <FormLabel>Grupo</FormLabel>
                                 <Select
-                                    onValueChange={(value) => field.onChange(Number(value))}
+                                    onValueChange={(value) => field.onChange(value)}
                                     value={field.value ? String(field.value) : undefined}
                                     defaultValue={field.value ? String(field.value) : undefined}
                                 >
@@ -149,13 +171,13 @@ export const CreateFormatoInicioForm = () => {
                                     </FormControl>
                                     <SelectContent>
                                     {/* <SelectItem value="0">Selecciona el Grupo</SelectItem> */}
-                                    <SelectItem value="uap">UAP</SelectItem>
-                                    <SelectItem value="uedg">UEDG</SelectItem>
-                                    <SelectItem value="uip">UIP</SelectItem>
-                                    <SelectItem value="criminalistica">Criminalística</SelectItem>
-                                    <SelectItem value="uarc">UARC</SelectItem>
-                                    <SelectItem value="uiie">UIIE</SelectItem>
-                                    <SelectItem value="gapavi">GAPAVI</SelectItem>
+                                        <SelectItem value="uap">UAP</SelectItem>
+                                        <SelectItem value="uedg">UEDG</SelectItem>
+                                        <SelectItem value="uip">UIP</SelectItem>
+                                        <SelectItem value="criminalistica">Criminalística</SelectItem>
+                                        <SelectItem value="uarc">UARC</SelectItem>
+                                        <SelectItem value="uiie">UIIE</SelectItem>
+                                        <SelectItem value="gapavi">GAPAVI</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -179,7 +201,7 @@ export const CreateFormatoInicioForm = () => {
                                     </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                    <SelectItem value="0">Selecciona el Elemento que brindó Apoyo</SelectItem>
+                                    {/* <SelectItem value="0">Selecciona el Elemento que brindó Apoyo</SelectItem> */}
                                     {users.map((user) => (
                                         <SelectItem
                                         key={user.id}
@@ -201,7 +223,7 @@ export const CreateFormatoInicioForm = () => {
                             <FormItem>
                                 <FormLabel>Distrito</FormLabel>
                                 <Select
-                                    onValueChange={(value) => field.onChange(Number(value))}
+                                    onValueChange={(value) => field.onChange(value)}
                                     value={field.value ? String(field.value) : undefined}
                                     defaultValue={field.value ? String(field.value) : undefined}
                                 >
@@ -226,7 +248,7 @@ export const CreateFormatoInicioForm = () => {
                     />
                     <FormField
                         control={form.control}
-                        name="eventType"
+                        name="eventTypeId"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Tipo de Evento</FormLabel>
@@ -468,8 +490,48 @@ export const CreateFormatoInicioForm = () => {
                             </FormItem>
                         )}
                     />
+                    <FormField
+                        control={form.control}
+                        name="photoCount"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Serie Fotográfica del Lugar de los Hechos</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        placeholder="Cantidad de Fotos"
+                                        type="number"
+                                        disabled={isLoading}
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="videoCount"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Vídeo Grabaciones</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        placeholder="Cantidad de Videos"
+                                        type="number"
+                                        disabled={isLoading}
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                 </div>
             </div>
+            <Button type="submit" disabled={isLoading}>
+                {isLoading && <Loader className="w-4 h-4 mr-3 animate-spin" />}
+                Guardar Formato de Inicio
+            </Button>
         </form>
     </Form>
   );

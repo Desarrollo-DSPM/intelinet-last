@@ -51,7 +51,7 @@ export const initFormats = mysqlTable("init_formats", {
   id: int("id").primaryKey().autoincrement(),
   userId: int("user_id").notNull().references(() => users.id),
   group: varchar("group", { length: 255 }).notNull(),
-  supportUserId: varchar("support_user_id", { length: 255 }).references(() => users.id),
+  supportUserId: int("support_user_id").references(() => users.id),
   district: varchar("district", { length: 255 }).notNull(),
   eventTypeId: int("event_type_id").notNull().references(() => eventTypes.id),
   eventDate: date("event_date").notNull(),
@@ -63,6 +63,10 @@ export const initFormats = mysqlTable("init_formats", {
   victimInv: int("victim_inv").default(0),
   witnessInv: int("witness_inv").default(0),
   invAccused: int("inv_accused").default(0),
+  photoCount: int("photo_count").default(0),
+  videoCount: int("video_count").default(0),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
 });
 
 export const initFormatsRelations = relations(initFormats, ({ one }) => ({
