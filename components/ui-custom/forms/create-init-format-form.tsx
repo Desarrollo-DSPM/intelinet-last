@@ -1,7 +1,7 @@
 "use client";
 
-import { getAllEventTypes } from "@/actions/event-types/get-all-event-types";
-import { createInitFormat } from "@/actions/init-format/create-init-format";
+import { getAllEventTypes } from "@/actions/event/get-all-event-types";
+import { createInitFormat } from "@/actions/formats/create-init-format";
 import { getAllUsers } from "@/actions/users/get-users";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
