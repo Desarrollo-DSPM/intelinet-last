@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db/db";
 import { initFormats } from "@/lib/db/schema";
-import { formSchemaInitFormat } from "@/types/init-format";
+import { formSchemaInitFormat } from "@/types/format";
 import { z } from "zod";
 
 interface CreateInitFormatProps {

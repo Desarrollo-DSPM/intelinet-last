@@ -15,7 +15,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { useAuth } from "@/hooks/use-auth";
 import { EventType, UserWithDepartment } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
-import { formSchemaInitFormat } from "@/types/init-format";
+import { formSchemaInitFormat } from "@/types/format";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon, Loader, Trash } from "lucide-react";
