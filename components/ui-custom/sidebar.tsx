@@ -89,43 +89,45 @@ export const Sidebar = () => {
                 </li>
               </>
             )}
-            <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
-              Coordinación de inteligencia
-            </li>
-            <li>
-              <Link
-                href="/dashboard/coordinacion/init"
-                className={cn(
-                  "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                  pathname.startsWith("/dashboard/coordinacion/init") &&
-                    "bg-secondary font-medium"
-                )}
-              >
-                <FileText className="h-4 w-4" />
-                <span>Formato de inicio</span>
-              </Link>
-            </li>
             {Array.isArray(JSON.parse(auth?.modules || "[]")) &&
               JSON.parse(auth?.modules || "[]").length > 0 && (
                 <>
-                  <li className="my-4 ml-4 text-xs uppercase font-bold text-muted-foreground">
-                    Grupos especiales
+                  <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
+                    Coordinación de inteligencia
                   </li>
-                  {auth?.modules.includes("uap") && (
-                    <li>
-                      <Link
-                        href="/dashboard/coordinacion/uap"
-                        className={cn(
-                          "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                          pathname.startsWith("/dashboard/coordinacion/uap") &&
-                            "bg-secondary font-medium"
-                        )}
-                      >
-                        <CircleDot className="h-4 w-4" />
-                        <span>UAP</span>
-                      </Link>
+                  <li>
+                    <Link
+                      href="/dashboard/coordinacion/init"
+                      className={cn(
+                        "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
+                        pathname.startsWith("/dashboard/coordinacion/init") &&
+                          "bg-secondary font-medium"
+                      )}
+                    >
+                      <FileText className="h-4 w-4" />
+                      <span>Formato de inicio</span>
+                    </Link>
+                  </li>
+                  <>
+                    <li className="my-4 ml-4 text-xs uppercase font-bold text-muted-foreground">
+                      Grupos especiales
                     </li>
-                  )}
+                    {auth?.modules.includes("uap") && (
+                      <li>
+                        <Link
+                          href="/dashboard/coordinacion/uap"
+                          className={cn(
+                            "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
+                            pathname.startsWith("/dashboard/coordinacion/uap") &&
+                              "bg-secondary font-medium"
+                          )}
+                        >
+                          <CircleDot className="h-4 w-4" />
+                          <span>UAP</span>
+                        </Link>
+                      </li>
+                    )}
+                  </>
                 </>
               )}
           </ul>
