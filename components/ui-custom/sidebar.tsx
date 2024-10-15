@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import {
   Building2,
   CircleDot,
-  FileText,
+  Folder,
   GitBranch,
   House,
   Users,
@@ -97,15 +97,15 @@ export const Sidebar = () => {
                   </li>
                   <li>
                     <Link
-                      href="/dashboard/coordinacion/init"
+                      href="/dashboard/investigations"
                       className={cn(
                         "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                        pathname.startsWith("/dashboard/coordinacion/init") &&
+                        pathname.startsWith("/dashboard/investigations") &&
                           "bg-secondary font-medium"
                       )}
                     >
-                      <FileText className="h-4 w-4" />
-                      <span>Formato de inicio</span>
+                      <Folder className="h-4 w-4" />
+                      <span>Investigaciones</span>
                     </Link>
                   </li>
                   <>
@@ -118,8 +118,9 @@ export const Sidebar = () => {
                           href="/dashboard/coordinacion/uap"
                           className={cn(
                             "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                            pathname.startsWith("/dashboard/coordinacion/uap") &&
-                              "bg-secondary font-medium"
+                            pathname.startsWith(
+                              "/dashboard/coordinacion/uap"
+                            ) && "bg-secondary font-medium"
                           )}
                         >
                           <CircleDot className="h-4 w-4" />
