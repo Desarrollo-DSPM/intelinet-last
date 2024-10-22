@@ -1,7 +1,8 @@
-import { redirect } from "next/navigation";
+import { ReactNode } from "react";
 
-import { getDepartmentById } from "@/actions/departments/get-department";
-import { EditDepartmentForm } from "@/components/ui-custom/forms/edit-department-form";
+import { getUserById } from "@/actions/users/get-user";
+
+import { NavUserDetails } from "@/components/ui-custom/nav-user-details";
 import { Title } from "@/components/ui-custom/title";
 import {
   Breadcrumb,
@@ -12,19 +13,21 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-const EditDepartmentPage = async ({
+const UserDetailsLayout = async ({
+  children,
   params,
 }: {
-  params: { departmentId: string };
+  children: ReactNode;
+  params: { userId: string };
 }) => {
-  const { data } = await getDepartmentById(Number(params.departmentId));
+  const { data } = await getUserById(Number(params.userId));
 
-  if (!data) return redirect("/dashboard/departments");
+  if (!data) return null;
 
   return (
-    <div className="w-full">
+    <div>
       <div className="flex flex-col md:flex-row items-center justify-between gap-5 mb-10">
-        <Title>Editar departamento</Title>
+        <Title>Editar usuario</Title>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -32,19 +35,21 @@ const EditDepartmentPage = async ({
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/dashboard/departments">
-                Departamentos
+              <BreadcrumbLink href="/dashboard/admin/users">
+                Usuarios
               </BreadcrumbLink>
             </BreadcrumbItem>
+            <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Departamentos</BreadcrumbPage>
+              <BreadcrumbPage>{data?.name}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <EditDepartmentForm department={data} />
+      <NavUserDetails data={data} />
+      {children}
     </div>
   );
 };
 
-export default EditDepartmentPage;
+export default UserDetailsLayout;

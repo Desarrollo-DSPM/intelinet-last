@@ -38,7 +38,7 @@ export function DataTableRowActions({ data }: DataTableRowActionsProps) {
         <DropdownMenuContent align="end" className="w-[160px]">
           <DropdownMenuItem asChild>
             <Link
-              href={`/dashboard/departments/${data.id}`}
+              href={`/dashboard/admin/departments/${data.id}`}
               className="items-center gap-2"
             >
               <Pencil className="w-4 h-4 mr-2" />

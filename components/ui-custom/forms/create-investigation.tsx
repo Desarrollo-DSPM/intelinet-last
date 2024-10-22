@@ -14,7 +14,6 @@ import { createInvestigation } from "@/actions/investigations/create-investigati
 import { getAllUsers } from "@/actions/users/get-users";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Card, CardHeader } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -47,7 +46,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { InvestigationType, UserWithDepartment } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
 import { formSchemaCreateInvestigation } from "@/types/investigation";
-import { CalendarIcon, Loader, Trash } from "lucide-react";
+import { ArrowDownToLine, CalendarIcon, Loader, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export const CreateInvestigationForm = () => {
   const group = useSearchParams().get("group");
@@ -375,7 +375,7 @@ export const CreateInvestigationForm = () => {
           )}
         />
         <div className="flex items-end gap-5">
-          <div className="flex-1">
+          <div className="flex-1 space-y-2">
             <Label htmlFor="callFolio">Llamada 9.1.1.</Label>
             <Input
               type="text"
@@ -389,45 +389,48 @@ export const CreateInvestigationForm = () => {
           </Button>
         </div>
         <div>
-          <p className="text-muted-foreground">
-            Total: {callFolios.length} Llamadas 9.1.1.
-          </p>
-          <ul className="space-y-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-end gap-3">
-            {callFolios.length > 0 &&
-              callFolios.map((folio) => {
-                return (
-                  <li key={folio}>
-                    <Card>
-                      <CardHeader className="flex-row items-center gap-5">
-                        <h4 className="flex-1">
-                          Llamada: <span className="font-medium">{folio}</span>
-                        </h4>
-                        <TooltipProvider delayDuration={100}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                type="button"
-                                size="icon"
-                                variant="outline"
-                                onClick={() => removeFolio(folio, "call")}
-                              >
-                                <Trash className="w-4 h-4" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Eliminar Llamada</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </CardHeader>
-                    </Card>
-                  </li>
-                );
-              })}
-          </ul>
+          {callFolios.length > 0 ? (
+            <ul className="flex items-center gap-4 flex-wrap">
+              {callFolios.map((folio) => (
+                <li key={folio}>
+                  <Badge
+                    className="text-base gap-3 py-2 rounded-full font-normal"
+                    variant="outline"
+                  >
+                    {folio}
+                    <TooltipProvider delayDuration={100}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            size="icon"
+                            className="rounded-full size-6"
+                            variant="danger"
+                            onClick={() => removeFolio(folio, "call")}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Eliminar</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </Badge>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="my-10 text-center">
+              <p className="text-muted-foreground text-center inline-flex items-center">
+                Aquí aparecerán los folios de las llamadas
+                <ArrowDownToLine className="ml-2 w-4 h-4" />
+              </p>
+            </div>
+          )}
         </div>
         <div className="flex items-end gap-5">
-          <div className="flex-1">
+          <div className="flex-1 space-y-2">
             <Label htmlFor="iphFolio">IPH</Label>
             <Input
               type="text"
@@ -441,133 +444,138 @@ export const CreateInvestigationForm = () => {
           </Button>
         </div>
         <div>
-          <p className="text-muted-foreground">
-            Total: {iphFolios.length} IPHs
-          </p>
-          <ul className="space-y-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-end gap-3">
-            {iphFolios.length > 0 &&
-              iphFolios.map((folio) => {
-                return (
-                  <li key={folio}>
-                    <Card>
-                      <CardHeader className="flex-row items-center gap-5">
-                        <h4 className="flex-1">
-                          IPH: <span className="font-medium">{folio}</span>
-                        </h4>
-                        <TooltipProvider delayDuration={100}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                type="button"
-                                size="icon"
-                                variant="outline"
-                                onClick={() => removeFolio(folio, "iph")}
-                              >
-                                <Trash className="w-4 h-4" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Eliminar IPH</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </CardHeader>
-                    </Card>
-                  </li>
-                );
-              })}
-          </ul>
+          {iphFolios.length > 0 ? (
+            <ul className="flex items-center gap-4 flex-wrap">
+              {iphFolios.map((folio) => (
+                <li key={folio}>
+                  <Badge
+                    className="text-base gap-3 py-2 rounded-full font-normal"
+                    variant="outline"
+                  >
+                    {folio}
+                    <TooltipProvider delayDuration={100}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            size="icon"
+                            className="rounded-full size-6"
+                            variant="danger"
+                            onClick={() => removeFolio(folio, "iph")}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Eliminar</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </Badge>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="my-10 text-center">
+              <p className="text-muted-foreground text-center inline-flex items-center">
+                Aquí aparecerán los folios de los IPH
+                <ArrowDownToLine className="ml-2 w-4 h-4" />
+              </p>
+            </div>
+          )}
         </div>
-        <FormField
-          control={form.control}
-          name="victimInv"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Entrevista por Investigación a Víctimas</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Investigación a Víctimas (cantidad)"
-                  type="number"
-                  disabled={isLoading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="witnessInv"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Entrevista por Investigación a Testigos</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Investigación a Testigos (cantidad)"
-                  type="number"
-                  disabled={isLoading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="invAccused"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Entrevista por Investigación a Imputados</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Investigación a Imputados (cantidad)"
-                  type="number"
-                  disabled={isLoading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="photoCount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Serie Fotográfica del Lugar de los Hechos</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Cantidad de Fotos"
-                  type="number"
-                  disabled={isLoading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="videoCount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Vídeo Grabaciones</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Cantidad de Videos"
-                  type="number"
-                  disabled={isLoading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <FormField
+            control={form.control}
+            name="victimInv"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Investigación víctimas</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Investigación a víctimas (cantidad)"
+                    type="number"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="witnessInv"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Investigación testigos</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Investigación a testigos (cantidad)"
+                    type="number"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="invAccused"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Investigación imputados</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Investigación a imputados (cantidad)"
+                    type="number"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="photoCount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Serie Fotográfica del Lugar de los Hechos</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Cantidad de fotos"
+                    type="number"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="videoCount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Vídeo grabaciones</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Cantidad de videos"
+                    type="number"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <Button type="submit" disabled={isLoading}>
           {isLoading && <Loader className="w-4 h-4 mr-3 animate-spin" />}
           Crear investigación

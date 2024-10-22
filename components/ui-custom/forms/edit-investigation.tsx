@@ -51,8 +51,9 @@ import {
 } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
 import { formSchemaEditInvestigation } from "@/types/investigation";
-import { ArrowDownToLine, CalendarIcon, Loader, Trash } from "lucide-react";
+import { ArrowDownToLine, CalendarIcon, Loader, X } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 
 interface EditInvestigationFormProps {
   investigation: InvestigationWithDetails;
@@ -419,38 +420,35 @@ export const EditInvestigationForm = ({
           </Button>
         </div>
         <div>
-          <p className="text-muted-foreground">
-            Total: {callFolios.length} Llamadas 9.1.1.
-          </p>
-          <ul className="space-y-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-end gap-3">
+          <ul className="flex items-center gap-4 flex-wrap">
             {callFolios.length > 0 &&
               callFolios.map((folio) => {
                 return (
                   <li key={folio}>
-                    <Card>
-                      <CardHeader className="flex-row items-center gap-5">
-                        <h4 className="flex-1">
-                          Llamada: <span className="font-medium">{folio}</span>
-                        </h4>
-                        <TooltipProvider delayDuration={100}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                type="button"
-                                size="icon"
-                                variant="outline"
-                                onClick={() => removeFolio(folio, "call")}
-                              >
-                                <Trash className="w-4 h-4" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Eliminar Llamada</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </CardHeader>
-                    </Card>
+                    <Badge
+                      className="text-base gap-3 py-2 rounded-full font-normal"
+                      variant="outline"
+                    >
+                      {folio}
+                      <TooltipProvider delayDuration={100}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type="button"
+                              size="icon"
+                              className="rounded-full size-6"
+                              variant="danger"
+                              onClick={() => removeFolio(folio, "call")}
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Eliminar</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </Badge>
                   </li>
                 );
               })}
@@ -471,133 +469,132 @@ export const EditInvestigationForm = ({
           </Button>
         </div>
         <div>
-          <p className="text-muted-foreground">
-            Total: {iphFolios.length} IPHs
-          </p>
-          <ul className="space-y-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-end gap-3">
+          <ul className="flex items-center gap-4 flex-wrap">
             {iphFolios.length > 0 &&
               iphFolios.map((folio) => {
                 return (
                   <li key={folio}>
-                    <Card>
-                      <CardHeader className="flex-row items-center gap-5">
-                        <h4 className="flex-1">
-                          IPH: <span className="font-medium">{folio}</span>
-                        </h4>
-                        <TooltipProvider delayDuration={100}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                type="button"
-                                size="icon"
-                                variant="outline"
-                                onClick={() => removeFolio(folio, "iph")}
-                              >
-                                <Trash className="w-4 h-4" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Eliminar IPH</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </CardHeader>
-                    </Card>
+                    <Badge
+                      className="text-base gap-3 py-2 rounded-full font-normal"
+                      variant="outline"
+                    >
+                      {folio}
+                      <TooltipProvider delayDuration={100}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type="button"
+                              size="icon"
+                              className="rounded-full size-6"
+                              variant="danger"
+                              onClick={() => removeFolio(folio, "iph")}
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Eliminar</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </Badge>
                   </li>
                 );
               })}
           </ul>
         </div>
-        <FormField
-          control={form.control}
-          name="victimInv"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Entrevista por Investigación a Víctimas</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Investigación a Víctimas (cantidad)"
-                  type="number"
-                  disabled={isLoading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="witnessInv"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Entrevista por Investigación a Testigos</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Investigación a Testigos (cantidad)"
-                  type="number"
-                  disabled={isLoading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="invAccused"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Entrevista por Investigación a Imputados</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Investigación a Imputados (cantidad)"
-                  type="number"
-                  disabled={isLoading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="photoCount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Serie Fotográfica del Lugar de los Hechos</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Cantidad de Fotos"
-                  type="number"
-                  disabled={isLoading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="videoCount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Vídeo Grabaciones</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Cantidad de Videos"
-                  type="number"
-                  disabled={isLoading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <FormField
+            control={form.control}
+            name="victimInv"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Investigación víctimas</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Investigación a víctimas (cantidad)"
+                    type="number"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="witnessInv"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Investigación testigos</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Investigación a testigos (cantidad)"
+                    type="number"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="invAccused"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Investigación imputados</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Investigación a imputados (cantidad)"
+                    type="number"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="photoCount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Serie fotográfica del lugar de los hechos</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Cantidad de fotos"
+                    type="number"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="videoCount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Vídeo grabaciones</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Cantidad de videos"
+                    type="number"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <div>
           <h3 className="text-xl font-bold">Personas</h3>
         </div>
@@ -657,7 +654,7 @@ export const EditInvestigationForm = ({
                 <li key={index}>
                   <Card>
                     <CardHeader>
-                      <ul className="space-y-3">
+                      <ul className="space-y-2">
                         <li>
                           <span className="text-muted-foreground">Nombre:</span>{" "}
                           <span className="font-medium">{people.name}</span>

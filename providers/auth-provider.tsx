@@ -32,12 +32,7 @@ const AuthProvider = ({
   useEffect(() => {
     setAuth(initialUser);
 
-    const adminRoutes = [
-      "/dashboard/users",
-      "/dashboard/departments",
-      "/dashboard/investigations",
-      "/dashboard/groups",
-    ];
+    // const adminRoutes = ["/dashboard/admin"];
 
     // Rutas protegidas para admin
     if (auth?.role !== "admin") {
@@ -50,7 +45,10 @@ const AuthProvider = ({
           redirect("/dashboard/not-access");
         }
       } else {
-        if (adminRoutes.some((route) => pathname.startsWith(route))) {
+        // if (adminRoutes.some((route) => pathname.startsWith(route))) {
+        //   redirect("/dashboard/not-access");
+        // }
+        if (pathname.startsWith("/dashboard/admin")) {
           redirect("/dashboard/not-access");
         }
       }

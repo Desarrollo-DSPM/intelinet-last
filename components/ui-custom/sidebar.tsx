@@ -59,14 +59,14 @@ export const Sidebar = () => {
             {auth?.role === "admin" && (
               <>
                 <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
-                  Administradores
+                  Menu
                 </li>
                 <li>
                   <Link
-                    href="/dashboard/users"
+                    href="/dashboard/admin/users"
                     className={cn(
                       "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                      pathname.startsWith("/dashboard/users") &&
+                      pathname.startsWith("/dashboard/admin/users") &&
                         "bg-secondary font-medium"
                     )}
                   >
@@ -76,10 +76,10 @@ export const Sidebar = () => {
                 </li>
                 <li>
                   <Link
-                    href="/dashboard/departments"
+                    href="/dashboard/admin/departments"
                     className={cn(
                       "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                      pathname.startsWith("/dashboard/departments") &&
+                      pathname.startsWith("/dashboard/admin/departments") &&
                         "bg-secondary font-medium"
                     )}
                   >
@@ -87,19 +87,15 @@ export const Sidebar = () => {
                     <span>Departamentos</span>
                   </Link>
                 </li>
-              </>
-            )}
-            {auth?.role === "admin" ? (
-              <>
                 <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
                   Coordinación de inteligencia
                 </li>
                 <li>
                   <Link
-                    href="/dashboard/investigations"
+                    href="/dashboard/admin/investigations"
                     className={cn(
                       "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                      pathname.startsWith("/dashboard/investigations") &&
+                      pathname.startsWith("/dashboard/admin/investigations") &&
                         "bg-secondary font-medium"
                     )}
                   >
@@ -108,10 +104,10 @@ export const Sidebar = () => {
                   </Link>
                 </li>
               </>
-            ) : null}
+            )}
             {auth?.role === "admin" || auth?.modules.includes("uap") ? (
               <>
-                <li className="my-4 ml-4 text-xs uppercase font-bold text-muted-foreground">
+                <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
                   Grupos especiales
                 </li>
                 <li>
