@@ -3,6 +3,7 @@
 import { db } from "@/lib/db/db";
 import { investigations, User } from "@/lib/db/schema";
 import { formSchemaCreateInvestigation } from "@/types/investigation";
+import { format } from "date-fns";
 import { z } from "zod";
 
 interface CreateInvestigationProps {
@@ -33,13 +34,16 @@ export const createInvestigation = async ({
       videoCount,
     } = values;
 
+    // Formateamos la fecha de la investigación a dd/MM/yyyy
+    const formattedDate = format(new Date(investigationDate), "dd/MM/yyyy");
+
     await db.insert(investigations).values({
       userId,
       group,
       supportUserId,
       district,
       investigationTypeId,
-      investigationDate,
+      investigationDate: formattedDate.toString(),
       location,
       physicalVictim,
       moralVictim,

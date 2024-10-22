@@ -16,7 +16,13 @@ type SupportUser = Pick<
   "id" | "employeeNumber" | "name" | "lastname" | "email" | "modules"
 >;
 
-export const getAllInvestigations = async () => {
+interface GetInvestigationsByGroupProps {
+  group: string;
+}
+
+export const getInvestigationsByGroup = async ({
+  group,
+}: GetInvestigationsByGroupProps) => {
   try {
     // Traer todas las investigaciones con el usuario que las creó
     const investigationsWithCreatedBy = await db
@@ -37,7 +43,8 @@ export const getAllInvestigations = async () => {
       .leftJoin(
         investigationsTypes,
         eq(investigations.investigationTypeId, investigationsTypes.id)
-      );
+      )
+      .where(and(eq(investigations.group, group)));
 
     if (investigationsWithCreatedBy.length <= 0) {
       return { response: "error", message: "No hay investigaciones", data: [] };

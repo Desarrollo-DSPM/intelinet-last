@@ -70,7 +70,7 @@ export function DataTableViewOptions<TData>({
       </DropdownMenu>
       <Button asChild>
         <Link
-          href="/dashboard/investigations/new"
+          href="/dashboard/investigations/new?group=uap"
           className="flex items-center gap-2"
         >
           <CirclePlus className="w-4 h-4 mr-2" />

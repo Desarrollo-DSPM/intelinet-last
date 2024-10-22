@@ -1,20 +1,20 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { es } from "date-fns/locale";
 
 import { getAllInvestigationsTypes } from "@/actions/investigations/get-all-investigations-types";
-import { createInvestigation } from "@/actions/investigations/create-investigation";
+import { editInvestigation } from "@/actions/investigations/edit-investigation";
 import { getAllUsers } from "@/actions/users/get-users";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Card, CardHeader } from "@/components/ui/card";
+import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -44,22 +44,56 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/use-auth";
-import { InvestigationType, UserWithDepartment } from "@/lib/db/schema";
+import {
+  InvestigationType,
+  InvestigationWithDetails,
+  UserWithDepartment,
+} from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
-import { formSchemaCreateInvestigation } from "@/types/investigation";
-import { CalendarIcon, Loader, Trash } from "lucide-react";
+import { formSchemaEditInvestigation } from "@/types/investigation";
+import { ArrowDownToLine, CalendarIcon, Loader, Trash } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
-export const CreateInvestigationForm = () => {
-  const group = useSearchParams().get("group");
+interface EditInvestigationFormProps {
+  investigation: InvestigationWithDetails;
+}
+
+interface People {
+  name: string;
+  address: string;
+  plate: string;
+  phone: string;
+}
+
+export const EditInvestigationForm = ({
+  investigation,
+}: EditInvestigationFormProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [users, setUsers] = useState<UserWithDepartment[]>([]);
   const [investigationTypes, setInvestigationTypes] = useState<
     InvestigationType[]
   >([]);
-  const [callFolios, setCallFolios] = useState<string[]>([]);
+  const [callFolios, setCallFolios] = useState<string[]>(() => {
+    const folios = investigation.investigation.callFolios;
+    return folios ? JSON.parse(folios) : [];
+  });
   const [callFolio, setCallFolio] = useState<string>("");
-  const [iphFolios, setIphFolios] = useState<string[]>([]);
+  const [iphFolios, setIphFolios] = useState<string[]>(() => {
+    const folios = investigation.investigation.iphFolios;
+    return folios ? JSON.parse(folios) : [];
+  });
   const [iphFolio, setIphFolio] = useState<string>("");
+  const [people, setPeople] = useState<People[]>(() => {
+    const people = investigation.investigation.people;
+    return people ? JSON.parse(people) : [];
+  });
+
+  const [peopleObject, setPeopleObject] = useState<People>({
+    name: "",
+    address: "",
+    plate: "",
+    phone: "",
+  });
 
   const router = useRouter();
   const { auth } = useAuth();
@@ -99,34 +133,65 @@ export const CreateInvestigationForm = () => {
     }
   };
 
-  const form = useForm<z.infer<typeof formSchemaCreateInvestigation>>({
-    resolver: zodResolver(formSchemaCreateInvestigation),
+  const addPeople = (data: People) => {
+    if (!data.name || !data.address || !data.plate || !data.phone) {
+      toast.error("Todos los campos son requeridos");
+      return;
+    }
+
+    setPeople([data, ...people]);
+    setPeopleObject({
+      name: "",
+      address: "",
+      plate: "",
+      phone: "",
+    });
+  };
+
+  const removePeople = (id: number) => {
+    setPeople(people.filter((_, index) => index !== id));
+  };
+
+  const form = useForm<z.infer<typeof formSchemaEditInvestigation>>({
+    resolver: zodResolver(formSchemaEditInvestigation),
     defaultValues: {
-      group: group ? group : "",
       supportUserId: undefined,
-      district: undefined,
-      investigationTypeId: undefined,
-      investigationDate: new Date(),
-      location: "",
-      physicalVictim: "",
-      moralVictim: "",
-      victimInv: 0,
-      witnessInv: 0,
-      invAccused: 0,
-      photoCount: 0,
-      videoCount: 0,
+      district: investigation.investigation.district as
+        | "angel"
+        | "colon"
+        | "diana"
+        | "morelos"
+        | "villa"
+        | "zapata"
+        | undefined,
+      investigationTypeId: investigation.investigationType?.id,
+      investigationDate: parse(
+        investigation.investigation.investigationDate,
+        "dd/MM/yyyy",
+        new Date()
+      ), // Aquí parseamos la fecha
+      location: investigation.investigation.location,
+      physicalVictim: investigation.investigation.physicalVictim ?? "",
+      moralVictim: investigation.investigation.moralVictim ?? "",
+      victimInv: investigation.investigation.victimInv ?? 0,
+      witnessInv: investigation.investigation.witnessInv ?? 0,
+      invAccused: investigation.investigation.invAccused ?? 0,
+      photoCount: investigation.investigation.photoCount ?? 0,
+      videoCount: investigation.investigation.videoCount ?? 0,
+      census: investigation.investigation.census ?? 0,
+      afis: investigation.investigation.afis ?? 0,
+      atecedentsAOP: investigation.investigation.atecedentsAOP ?? 0,
     },
   });
 
-  async function onSubmit(
-    values: z.infer<typeof formSchemaCreateInvestigation>
-  ) {
+  async function onSubmit(values: z.infer<typeof formSchemaEditInvestigation>) {
     setIsLoading(true);
 
     const valuesForm = {
       ...values,
       callFolios: JSON.stringify(callFolios),
       iphFolios: JSON.stringify(iphFolios),
+      people: JSON.stringify(people),
     };
 
     if (!auth?.id) {
@@ -135,61 +200,24 @@ export const CreateInvestigationForm = () => {
       return;
     }
 
-    const res = await createInvestigation({
-      userId: auth.id,
+    const res = await editInvestigation({
+      id: investigation.investigation.id,
       values: valuesForm,
     });
 
     if (res?.response === "success") {
       router.refresh();
       toast.success(res.message);
-      form.reset();
     } else {
       toast.error(res.message);
     }
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    setIsLoading(false);
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-        {!group && (
-          <FormField
-            control={form.control}
-            name="group"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Grupo</FormLabel>
-                <Select
-                  onValueChange={(value) => field.onChange(value)}
-                  value={field.value ? String(field.value) : undefined}
-                  defaultValue={field.value ? String(field.value) : undefined}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona el Grupo" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="uap">UAP</SelectItem>
-                    <SelectItem value="uedg">UEDG</SelectItem>
-                    <SelectItem value="uip">UIP</SelectItem>
-                    <SelectItem value="criminalistica">
-                      Criminalística
-                    </SelectItem>
-                    <SelectItem value="uarc">UARC</SelectItem>
-                    <SelectItem value="uiie">UIIE</SelectItem>
-                    <SelectItem value="gapavi">GAPAVI</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
         <FormField
           control={form.control}
           name="supportUserId"
@@ -286,7 +314,7 @@ export const CreateInvestigationForm = () => {
           name="investigationDate"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Fecha del Evento</FormLabel>
+              <FormLabel>Fecha</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -297,10 +325,12 @@ export const CreateInvestigationForm = () => {
                         !field.value && "text-muted-foreground"
                       )}
                     >
-                      {field.value ? (
-                        format(field.value, "dd/MM/yyyy")
-                      ) : (
-                        <span>Escoja una fecha </span>
+                      {format(
+                        field.value instanceof Date
+                          ? field.value
+                          : parse(field.value, "dd/MM/yyyy", new Date()),
+                        "dd MMM, yyyy",
+                        { locale: es }
                       )}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
@@ -375,7 +405,7 @@ export const CreateInvestigationForm = () => {
           )}
         />
         <div className="flex items-end gap-5">
-          <div className="flex-1">
+          <div className="flex-1 space-y-2">
             <Label htmlFor="callFolio">Llamada 9.1.1.</Label>
             <Input
               type="text"
@@ -427,7 +457,7 @@ export const CreateInvestigationForm = () => {
           </ul>
         </div>
         <div className="flex items-end gap-5">
-          <div className="flex-1">
+          <div className="flex-1 space-y-2">
             <Label htmlFor="iphFolio">IPH</Label>
             <Input
               type="text"
@@ -568,9 +598,179 @@ export const CreateInvestigationForm = () => {
             </FormItem>
           )}
         />
+        <div>
+          <h3 className="text-xl font-bold">Personas</h3>
+        </div>
+        <div className="flex items-end gap-5">
+          <div className="flex-1 space-y-2">
+            <Label htmlFor="peopleName">Nombre</Label>
+            <Input
+              type="text"
+              id="peopleName"
+              value={peopleObject.name}
+              onChange={(e) =>
+                setPeopleObject({ ...peopleObject, name: e.target.value })
+              }
+            />
+          </div>
+          <div className="flex-1 space-y-2">
+            <Label htmlFor="peopleAddress">Dirección</Label>
+            <Input
+              type="text"
+              id="peopleAddress"
+              value={peopleObject.address}
+              onChange={(e) =>
+                setPeopleObject({ ...peopleObject, address: e.target.value })
+              }
+            />
+          </div>
+          <div className="flex-1 space-y-2">
+            <Label htmlFor="peoplePlate">Matrícula</Label>
+            <Input
+              type="text"
+              id="peoplePlate"
+              value={peopleObject.plate}
+              onChange={(e) =>
+                setPeopleObject({ ...peopleObject, plate: e.target.value })
+              }
+            />
+          </div>
+          <div className="flex-1 space-y-2">
+            <Label htmlFor="peoplePhone">Teléfono</Label>
+            <Input
+              type="text"
+              id="peoplePhone"
+              value={peopleObject.phone}
+              onChange={(e) =>
+                setPeopleObject({ ...peopleObject, phone: e.target.value })
+              }
+            />
+          </div>
+          <Button type="button" onClick={() => addPeople(peopleObject)}>
+            Agregar
+          </Button>
+        </div>
+        <div>
+          {people.length > 0 ? (
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              {people.map((people, index) => (
+                <li key={index}>
+                  <Card>
+                    <CardHeader>
+                      <ul className="space-y-3">
+                        <li>
+                          <span className="text-muted-foreground">Nombre:</span>{" "}
+                          <span className="font-medium">{people.name}</span>
+                        </li>
+                        <li>
+                          <span className="text-muted-foreground">
+                            Dirección:
+                          </span>{" "}
+                          <span className="font-medium">{people.address}</span>
+                        </li>
+                        <li>
+                          <span className="text-muted-foreground">
+                            Matrícula:
+                          </span>{" "}
+                          <span className="font-medium">{people.plate}</span>
+                        </li>
+                        <li>
+                          <span className="text-muted-foreground">
+                            Teléfono:
+                          </span>{" "}
+                          <span className="font-medium">{people.phone}</span>
+                        </li>
+                      </ul>
+                    </CardHeader>
+                    <Separator />
+                    <CardFooter className="pt-6">
+                      <Button
+                        type="button"
+                        className="w-full"
+                        variant="danger"
+                        onClick={() => removePeople(index)}
+                      >
+                        Eliminar
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="my-10 text-center">
+              <p className="text-muted-foreground text-center inline-flex items-center">
+                Aquí aparecerán las personas agregadas a la investigación{" "}
+                <ArrowDownToLine className="ml-2 w-4 h-4" />
+              </p>
+            </div>
+          )}
+        </div>
+        <div className="flex items-center gap-5">
+          <div className="w-full">
+            <FormField
+              control={form.control}
+              name="census"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Censos</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Cantidad de censos"
+                      type="number"
+                      disabled={isLoading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="w-full">
+            <FormField
+              control={form.control}
+              name="afis"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Afis</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Cantidad de afis"
+                      type="number"
+                      disabled={isLoading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="w-full">
+            <FormField
+              control={form.control}
+              name="atecedentsAOP"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Antecedentes AOP</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Antecedentes AOP"
+                      type="number"
+                      disabled={isLoading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
         <Button type="submit" disabled={isLoading}>
           {isLoading && <Loader className="w-4 h-4 mr-3 animate-spin" />}
-          Crear investigación
+          Editar investigación
         </Button>
       </form>
     </Form>

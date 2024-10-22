@@ -89,48 +89,46 @@ export const Sidebar = () => {
                 </li>
               </>
             )}
-            {Array.isArray(JSON.parse(auth?.modules || "[]")) &&
-              JSON.parse(auth?.modules || "[]").length > 0 && (
-                <>
-                  <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
-                    Coordinación de inteligencia
-                  </li>
-                  <li>
-                    <Link
-                      href="/dashboard/investigations"
-                      className={cn(
-                        "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                        pathname.startsWith("/dashboard/investigations") &&
-                          "bg-secondary font-medium"
-                      )}
-                    >
-                      <Folder className="h-4 w-4" />
-                      <span>Investigaciones</span>
-                    </Link>
-                  </li>
-                  <>
-                    <li className="my-4 ml-4 text-xs uppercase font-bold text-muted-foreground">
-                      Grupos especiales
-                    </li>
-                    {auth?.modules.includes("uap") && (
-                      <li>
-                        <Link
-                          href="/dashboard/coordinacion/uap"
-                          className={cn(
-                            "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                            pathname.startsWith(
-                              "/dashboard/coordinacion/uap"
-                            ) && "bg-secondary font-medium"
-                          )}
-                        >
-                          <CircleDot className="h-4 w-4" />
-                          <span>UAP</span>
-                        </Link>
-                      </li>
+            {auth?.role === "admin" ? (
+              <>
+                <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
+                  Coordinación de inteligencia
+                </li>
+                <li>
+                  <Link
+                    href="/dashboard/investigations"
+                    className={cn(
+                      "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
+                      pathname.startsWith("/dashboard/investigations") &&
+                        "bg-secondary font-medium"
                     )}
-                  </>
-                </>
-              )}
+                  >
+                    <Folder className="h-4 w-4" />
+                    <span>Investigaciones</span>
+                  </Link>
+                </li>
+              </>
+            ) : null}
+            {auth?.role === "admin" || auth?.modules.includes("uap") ? (
+              <>
+                <li className="my-4 ml-4 text-xs uppercase font-bold text-muted-foreground">
+                  Grupos especiales
+                </li>
+                <li>
+                  <Link
+                    href="/dashboard/groups/uap"
+                    className={cn(
+                      "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
+                      pathname.startsWith("/dashboard/groups/uap") &&
+                        "bg-secondary font-medium"
+                    )}
+                  >
+                    <CircleDot className="h-4 w-4" />
+                    <span>UAP</span>
+                  </Link>
+                </li>
+              </>
+            ) : null}
           </ul>
         </section>
       </aside>

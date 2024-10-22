@@ -58,7 +58,7 @@ export const investigations = mysqlTable("investigations", {
   investigationTypeId: int("investigation_type_id")
     .notNull()
     .references(() => investigationsTypes.id),
-  investigationDate: date("investigation_date").notNull(),
+  investigationDate: varchar("investigation_date", { length: 50 }).notNull(),
   location: varchar("location", { length: 255 }).notNull(),
   physicalVictim: varchar("physical_victim", { length: 255 }),
   moralVictim: varchar("moral_victim", { length: 255 }),
