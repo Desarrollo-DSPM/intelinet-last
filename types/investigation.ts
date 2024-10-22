@@ -52,7 +52,35 @@ export const formSchemaEditInvestigation = z.object({
   photoCount: z.coerce.number().int().default(0),
   videoCount: z.coerce.number().int().default(0),
   people: z.string().optional(),
-  census: z.coerce.number().int(),
-  afis: z.coerce.number().int(),
-  atecedentsAOP: z.coerce.number().int(),
+  census: z.coerce
+    .number({
+      required_error: "La cantidad de censos es requerida",
+    })
+    .int(),
+  afis: z.coerce
+    .number({
+      required_error: "La cantidad de AFIS es requerida",
+    })
+    .int(),
+  atecedentsAOP: z.coerce
+    .number({
+      required_error: "La cantidad de antecedentes AOP es requerida",
+    })
+    .int(),
+  socialNetworks: z.string().optional(),
+  peopleFiles: z.coerce
+    .number({
+      required_error: "La cantidad de archivos de personas es requerida",
+    })
+    .int(),
+  comparision: z.coerce
+    .number({
+      required_error: "La cantidad de comparativa es requerida",
+    })
+    .int(),
+  chronologyUAT: z.coerce
+    .number({
+      required_error: "La cantidad de cronología UAT es requerida",
+    })
+    .int(),
 });

@@ -36,6 +36,10 @@ export const editInvestigation = async ({
       census,
       afis,
       atecedentsAOP,
+      socialNetworks,
+      peopleFiles,
+      comparision,
+      chronologyUAT,
     } = values;
 
     // Formateamos la fecha de la investigación a dd/MM/yyyy
@@ -62,6 +66,10 @@ export const editInvestigation = async ({
         census,
         afis,
         atecedentsAOP,
+        socialNetworks,
+        peopleFiles,
+        comparision,
+        chronologyUAT,
         createdAt: new Date(),
         updatedAt: new Date(),
       })

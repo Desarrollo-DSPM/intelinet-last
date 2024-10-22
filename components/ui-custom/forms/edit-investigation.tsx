@@ -54,6 +54,7 @@ import { formSchemaEditInvestigation } from "@/types/investigation";
 import { ArrowDownToLine, CalendarIcon, Loader, X } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
 
 interface EditInvestigationFormProps {
   investigation: InvestigationWithDetails;
@@ -64,6 +65,11 @@ interface People {
   address: string;
   plate: string;
   phone: string;
+}
+
+interface SocialNetwork {
+  name: string;
+  url: string;
 }
 
 export const EditInvestigationForm = ({
@@ -94,6 +100,14 @@ export const EditInvestigationForm = ({
     address: "",
     plate: "",
     phone: "",
+  });
+  const [socialNetworks, setSocialNetworks] = useState<SocialNetwork[]>(() => {
+    const social = investigation.investigation.socialNetworks;
+    return social ? JSON.parse(social) : [];
+  });
+  const [socialNetwork, setSocialNetwork] = useState<SocialNetwork>({
+    name: "",
+    url: "",
   });
 
   const router = useRouter();
@@ -153,6 +167,23 @@ export const EditInvestigationForm = ({
     setPeople(people.filter((_, index) => index !== id));
   };
 
+  const addSocialNetwork = (data: SocialNetwork) => {
+    if (!data.name || !data.url) {
+      toast.error("Todos los campos son requeridos");
+      return;
+    }
+
+    setSocialNetworks([data, ...socialNetworks]);
+    setSocialNetwork({
+      name: "",
+      url: "",
+    });
+  };
+
+  const removeSocialNetwork = (id: number) => {
+    setSocialNetworks(socialNetworks.filter((_, index) => index !== id));
+  };
+
   const form = useForm<z.infer<typeof formSchemaEditInvestigation>>({
     resolver: zodResolver(formSchemaEditInvestigation),
     defaultValues: {
@@ -170,7 +201,7 @@ export const EditInvestigationForm = ({
         investigation.investigation.investigationDate,
         "dd/MM/yyyy",
         new Date()
-      ), // Aquí parseamos la fecha
+      ),
       location: investigation.investigation.location,
       physicalVictim: investigation.investigation.physicalVictim ?? "",
       moralVictim: investigation.investigation.moralVictim ?? "",
@@ -182,6 +213,9 @@ export const EditInvestigationForm = ({
       census: investigation.investigation.census ?? 0,
       afis: investigation.investigation.afis ?? 0,
       atecedentsAOP: investigation.investigation.atecedentsAOP ?? 0,
+      peopleFiles: investigation.investigation.peopleFiles ?? 0,
+      comparision: investigation.investigation.comparision ?? 0,
+      chronologyUAT: investigation.investigation.chronologyUAT ?? 0,
     },
   });
 
@@ -193,6 +227,7 @@ export const EditInvestigationForm = ({
       callFolios: JSON.stringify(callFolios),
       iphFolios: JSON.stringify(iphFolios),
       people: JSON.stringify(people),
+      socialNetworks: JSON.stringify(socialNetworks),
     };
 
     if (!auth?.id) {
@@ -764,6 +799,148 @@ export const EditInvestigationForm = ({
               )}
             />
           </div>
+        </div>
+        <div>
+          <h3 className="text-xl font-bold">Redes sociales</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 items-end">
+          <div className="space-y-2">
+            <Label htmlFor="socialNetworkName">Red social</Label>
+            <Select
+              value={socialNetwork.name}
+              onValueChange={(value) =>
+                setSocialNetwork({ ...socialNetwork, name: value })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selecciona la red social" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="facebook">Facebook</SelectItem>
+                <SelectItem value="instagram">Instagram</SelectItem>
+                <SelectItem value="linkedin">Linkedin</SelectItem>
+                <SelectItem value="twitter">Twitter</SelectItem>
+                <SelectItem value="whatsapp">WhatsApp</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="xl:col-span-2 space-y-2">
+            <Label htmlFor="socialNetworkUrl">URL</Label>
+            <Input
+              type="text"
+              id="socialNetworkUrl"
+              placeholder="https://www.facebook.com/username"
+              value={socialNetwork.url}
+              onChange={(e) =>
+                setSocialNetwork({ ...socialNetwork, url: e.target.value })
+              }
+            />
+          </div>
+          <Button type="button" onClick={() => addSocialNetwork(socialNetwork)}>
+            Agregar
+          </Button>
+        </div>
+        <div>
+          {socialNetworks.length > 0 ? (
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {socialNetworks.map((social, index) => (
+                <li key={index}>
+                  <Card>
+                    <CardHeader className="flex-row items-center gap-3">
+                      <Image
+                        src={`/icons/social/${social.name}.png`}
+                        alt={social.name}
+                        width={50}
+                        height={50}
+                        className="w-10 h-10 object-cover mt-1"
+                      />
+                      <div>
+                        <h4 className="capitalize text-lg font-medium">
+                          {social.name}
+                        </h4>
+                        <p className="text-muted-foreground text-sm">
+                          {social.url}
+                        </p>
+                      </div>
+                    </CardHeader>
+                    <CardFooter>
+                      <Button
+                        type="button"
+                        className="w-full"
+                        variant="danger"
+                        onClick={() => removeSocialNetwork(index)}
+                      >
+                        Eliminar
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="my-10 text-center">
+              <p className="text-muted-foreground text-center inline-flex items-center">
+                Aquí aparecerán las redes sociales
+                <ArrowDownToLine className="ml-2 w-4 h-4" />
+              </p>
+            </div>
+          )}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <FormField
+            control={form.control}
+            name="peopleFiles"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fichas de personas</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Fichas de personas (cantidad)"
+                    type="number"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="comparision"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Comparativa</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Comparativa (cantidad)"
+                    type="number"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="chronologyUAT"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cronología U.A.T.</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Cronología U.A.T. (cantidad)"
+                    type="number"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
         <Button type="submit" disabled={isLoading}>
           {isLoading && <Loader className="w-4 h-4 mr-3 animate-spin" />}
