@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { InvestigationWithDetails } from "@/lib/db/schema";
 
-import { Ellipsis, Pencil, Trash2 } from "lucide-react";
+import { Ellipsis, File, Pencil, Trash2 } from "lucide-react";
 import { DeleteUserModal } from "@/components/ui-custom/modals/delete-user-modal";
 
 interface DataTableRowActionsProps {
@@ -35,7 +35,7 @@ export function DataTableRowActions({ data }: DataTableRowActionsProps) {
             <span className="sr-only">Abrir menu</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[80px]">
+        <DropdownMenuContent align="end">
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/groups/uap/investigations/${data.investigation.id}`}
@@ -43,6 +43,15 @@ export function DataTableRowActions({ data }: DataTableRowActionsProps) {
             >
               <Pencil className="w-4 h-4 mr-2" />
               Editar
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/dashboard/groups/uap/investigations/pdfs/${data.investigation.id}`}
+              className="items-center gap-2"
+            >
+              <File className="w-4 h-4 mr-2" />
+              Descargar PDF
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

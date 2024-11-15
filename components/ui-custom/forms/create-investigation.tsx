@@ -148,9 +148,7 @@ export const CreateInvestigationForm = () => {
       toast.error(res.message);
     }
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    setIsLoading(false);
   }
 
   return (
@@ -298,7 +296,7 @@ export const CreateInvestigationForm = () => {
                       )}
                     >
                       {field.value ? (
-                        format(field.value, "dd/MM/yyyy")
+                        format(field.value, "dd MMM, yyyy")
                       ) : (
                         <span>Escoja una fecha </span>
                       )}
@@ -313,7 +311,7 @@ export const CreateInvestigationForm = () => {
                     selected={field.value ? new Date(field.value) : undefined}
                     onSelect={field.onChange}
                     disabled={(date) =>
-                      date < new Date(new Date().setHours(0, 0, 0, 0))
+                      date > new Date() || date < new Date("1900-01-01")
                     }
                     initialFocus
                   />

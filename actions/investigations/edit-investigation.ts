@@ -40,10 +40,39 @@ export const editInvestigation = async ({
       peopleFiles,
       comparision,
       chronologyUAT,
+      surveillanceOperationPeople,
+      surveillanceOperationVehicles,
+      surveillanceOperationAdressess,
+      searchOperationTracking,
+      searchOperationOthers,
+      pliceReport,
+      photographicSeries,
+      mapUAT,
+      arrestOperationLocation,
+      arrestOperationDistrict,
+      arrestOperationDate,
+      personsArrested,
+      arrestsInFlagranteDelicto,
+      arrestsForAdministrative,
+      arrestsForTracking,
+      arrestsByArrestWarrant,
+      arrestsBySearchWarrant,
+      personsLocatedUNNA,
+      personsLocatedSocialWork,
+      recoveredObjects,
+      securedDrug,
     } = values;
 
-    // Formateamos la fecha de la investigación a dd/MM/yyyy
+    // Formateamos las fechas a dd/MM/yyyy
     const formattedDate = format(new Date(investigationDate), "dd/MM/yyyy");
+    let arrestOperationDateFormatted = "";
+
+    if (arrestOperationDate) {
+      arrestOperationDateFormatted = format(
+        new Date(arrestOperationDate),
+        "dd/MM/yyyy"
+      );
+    }
 
     await db
       .update(investigations)
@@ -70,12 +99,33 @@ export const editInvestigation = async ({
         peopleFiles,
         comparision,
         chronologyUAT,
+        surveillanceOperationPeople,
+        surveillanceOperationVehicles,
+        surveillanceOperationAdressess,
+        searchOperationTracking,
+        searchOperationOthers,
+        pliceReport,
+        photographicSeries,
+        mapUAT,
+        arrestOperationLocation,
+        arrestOperationDistrict,
+        arrestOperationDate: arrestOperationDateFormatted.toString(),
+        personsArrested,
+        arrestsInFlagranteDelicto,
+        arrestsForAdministrative,
+        arrestsForTracking,
+        arrestsByArrestWarrant,
+        arrestsBySearchWarrant,
+        personsLocatedUNNA,
+        personsLocatedSocialWork,
+        recoveredObjects,
+        securedDrug,
         createdAt: new Date(),
         updatedAt: new Date(),
       })
       .where(eq(investigations.id, id));
 
-    return { response: "success", message: "Investigación modificada" };
+    return { response: "success", message: "Investigación actualizada" };
   } catch (error) {
     return { response: "error", message: `Ha ocurrido un error: ${error}` };
   }

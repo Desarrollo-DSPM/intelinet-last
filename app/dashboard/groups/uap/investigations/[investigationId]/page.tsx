@@ -9,6 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { redirect } from "next/navigation";
 
 export default async function InvestigationsPage({
   params,
@@ -18,6 +19,10 @@ export default async function InvestigationsPage({
   const { data } = await getInvestigationsById({
     id: Number(params.investigationId),
   });
+
+  if (!data) {
+    redirect("/dashboard/groups/uap/investigations");
+  }
 
   return (
     <div>

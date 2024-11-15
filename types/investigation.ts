@@ -83,4 +83,94 @@ export const formSchemaEditInvestigation = z.object({
       required_error: "La cantidad de cronología UAT es requerida",
     })
     .int(),
+  surveillanceOperationPeople: z.coerce
+    .number({
+      required_error:
+        "La cantidad de personas en operativo de vigilancia es requerida",
+    })
+    .int(),
+  surveillanceOperationVehicles: z.coerce
+    .number({
+      required_error:
+        "La cantidad de vehículos en operativo de vigilancia es requerida",
+    })
+    .int(),
+  surveillanceOperationAdressess: z.coerce
+    .number({
+      required_error:
+        "La cantidad de direcciones en operativo de vigilancia es requerida",
+    })
+    .int(),
+  searchOperationTracking: z.coerce
+    .number({
+      required_error:
+        "La cantidad de rastreo en operativo de búsqueda es requerida",
+    })
+    .int(),
+  searchOperationOthers: z.coerce
+    .number({
+      required_error:
+        "La cantidad de otros en operativo de búsqueda es requerida",
+    })
+    .int(),
+  pliceReport: z.coerce
+    .number({
+      required_error: "La cantidad de reporte policial es requerida",
+    })
+    .int(),
+  photographicSeries: z.coerce
+    .number({
+      required_error: "La cantidad de series fotográficas es requerida",
+    })
+    .int(),
+  mapUAT: z.coerce
+    .number({
+      required_error: "La cantidad de mapas U.A.T. es requerida",
+    })
+    .int(),
+  arrestOperationLocation: z.string().optional(),
+  arrestOperationDistrict: z.string().optional(),
+  arrestOperationDate: z.date().optional(),
+  personsArrested: z.string().optional(),
+  arrestsInFlagranteDelicto: z.coerce
+    .number({
+      required_error: "La cantidad de arrestos en flagrancia es requerida",
+    })
+    .int(),
+  arrestsForAdministrative: z.coerce
+    .number({
+      required_error: "La cantidad de arrestos administrativos es requerida",
+    })
+    .int(),
+  arrestsForTracking: z.coerce
+    .number({
+      required_error:
+        "La cantidad de arrestos por seguimiento de la investigación es requerida",
+    })
+    .int(),
+  arrestsByArrestWarrant: z.coerce
+    .number({
+      required_error:
+        "La cantidad de arrestos por orden de aprehensión es requerida",
+    })
+    .int(),
+  arrestsBySearchWarrant: z.coerce
+    .number({
+      required_error: "La cantidad de arrestos por orden de cateo es requerida",
+    })
+    .int(),
+  personsLocatedUNNA: z.coerce
+    .number({
+      required_error:
+        "La cantidad de personas localizadas y canalizadas a la UNNA es requerida",
+    })
+    .int(),
+  personsLocatedSocialWork: z.coerce
+    .number({
+      required_error:
+        "La cantidad de personas localizadas y canalizadas a trabajo social es requerida",
+    })
+    .int(),
+  recoveredObjects: z.string().optional(),
+  securedDrug: z.string().optional(),
 });
