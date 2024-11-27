@@ -1,0 +1,105 @@
+CREATE TABLE `departments` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`name` varchar(100),
+	`created_at` timestamp NOT NULL,
+	`updated_at` timestamp NOT NULL,
+	`is_active` tinyint DEFAULT 1,
+	CONSTRAINT `departments_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `investigations` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`user_id` int NOT NULL,
+	`group` varchar(255) NOT NULL,
+	`support_user_id` int,
+	`district` varchar(255) NOT NULL,
+	`investigation_type_id` int NOT NULL,
+	`investigation_date` varchar(50) NOT NULL,
+	`location` varchar(255) NOT NULL,
+	`physical_victim` varchar(255),
+	`moral_victim` varchar(255),
+	`call_folios` text,
+	`iph_folios` text,
+	`victim_inv` int DEFAULT 0,
+	`witness_inv` int DEFAULT 0,
+	`inv_accused` int DEFAULT 0,
+	`photo_count` int DEFAULT 0,
+	`video_count` int DEFAULT 0,
+	`people` text,
+	`census` int DEFAULT 0,
+	`afis` int DEFAULT 0,
+	`atecedents_aop` int DEFAULT 0,
+	`social_networks` text,
+	`people_files` int DEFAULT 0,
+	`comparision` int DEFAULT 0,
+	`chronology_uat` int DEFAULT 0,
+	`surveillance_operation_people` int DEFAULT 0,
+	`surveillance_operation_vehicles` int DEFAULT 0,
+	`surveillance_operation_addresses` int DEFAULT 0,
+	`search_operation_tracking` int DEFAULT 0,
+	`search_operation_others` int DEFAULT 0,
+	`plice_report` int DEFAULT 0,
+	`photographic_series` int DEFAULT 0,
+	`map_uat` int DEFAULT 0,
+	`arrest_operation_location` varchar(255),
+	`arrest_operation_district` varchar(255),
+	`arrest_operation_date` varchar(50) DEFAULT '',
+	`persons_arrested` text,
+	`arrests_in_flagrante_delicto` int DEFAULT 0,
+	`arrests_for_administrative` int DEFAULT 0,
+	`arrests_for_tracking` int DEFAULT 0,
+	`arrests_by_arrest_warrent` int DEFAULT 0,
+	`arrests_by_search_warrent` int DEFAULT 0,
+	`persons_located_unna` int DEFAULT 0,
+	`persons_located_social_work` int DEFAULT 0,
+	`recovered_objects` text,
+	`secured_drug` text,
+	`secured_vehicles` text,
+	`secured_objects` text,
+	`informative_sheet` int DEFAULT 0,
+	`offices_mp` int DEFAULT 0,
+	`delivery_date` varchar(50),
+	`delivery_hour` varchar(50),
+	`status` varchar(255) DEFAULT 'in-progress',
+	`created_at` timestamp NOT NULL,
+	`updated_at` timestamp NOT NULL,
+	CONSTRAINT `investigations_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `investigations_types` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`created_at` timestamp NOT NULL,
+	`updated_at` timestamp NOT NULL,
+	`is_active` tinyint DEFAULT 1,
+	CONSTRAINT `investigations_types_id` PRIMARY KEY(`id`),
+	CONSTRAINT `investigations_types_name_unique` UNIQUE(`name`)
+);
+--> statement-breakpoint
+CREATE TABLE `users` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`department_id` int NOT NULL,
+	`name` varchar(100),
+	`lastname` varchar(100),
+	`username` varchar(100) NOT NULL,
+	`employee_number` int NOT NULL,
+	`email` varchar(255) NOT NULL,
+	`password` text NOT NULL,
+	`role` varchar(20) NOT NULL DEFAULT 'default',
+	`modules` text NOT NULL,
+	`image` varchar(255),
+	`date_of_birth` timestamp,
+	`date_of_entry` date NOT NULL,
+	`created_at` timestamp NOT NULL,
+	`updated_at` timestamp NOT NULL,
+	`is_active` tinyint DEFAULT 1,
+	CONSTRAINT `users_id` PRIMARY KEY(`id`),
+	CONSTRAINT `users_username_unique` UNIQUE(`username`),
+	CONSTRAINT `users_employee_number_unique` UNIQUE(`employee_number`),
+	CONSTRAINT `users_email_unique` UNIQUE(`email`)
+);
+--> statement-breakpoint
+ALTER TABLE `investigations` ADD CONSTRAINT `investigations_user_id_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `investigations` ADD CONSTRAINT `investigations_support_user_id_users_id_fk` FOREIGN KEY (`support_user_id`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `investigations` ADD CONSTRAINT `investigations_investigation_type_id_investigations_types_id_fk` FOREIGN KEY (`investigation_type_id`) REFERENCES `investigations_types`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `users` ADD CONSTRAINT `users_department_id_departments_id_fk` FOREIGN KEY (`department_id`) REFERENCES `departments`(`id`) ON DELETE no action ON UPDATE no action;

@@ -38,7 +38,9 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -68,6 +70,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
+import { formatText } from "@/helpers/format-text";
 
 interface EditInvestigationFormProps {
   investigation: InvestigationWithDetails;
@@ -101,6 +105,20 @@ interface SecuredDrug {
   type: string;
   unit: string;
   quantity: number;
+}
+
+interface Vehicle {
+  brand: string;
+  model: string;
+  type: string;
+  color: string;
+  plate: string;
+  caracteristics: string;
+}
+
+interface Object {
+  type: string;
+  description: string;
 }
 
 export const EditInvestigationForm = ({
@@ -170,6 +188,26 @@ export const EditInvestigationForm = ({
     type: "",
     unit: "",
     quantity: 0,
+  });
+  const [securedVehicles, setSecuredVehicles] = useState<Vehicle[]>(() => {
+    const vehicle = investigation.investigation.securedVehicles;
+    return vehicle ? JSON.parse(vehicle) : [];
+  });
+  const [securedVehicle, setSecuredVehicle] = useState<Vehicle>({
+    brand: "",
+    model: "",
+    type: "",
+    color: "",
+    plate: "",
+    caracteristics: "",
+  });
+  const [securedObjects, setSecuredObjects] = useState<Object[]>(() => {
+    const object = investigation.investigation.securedObjects;
+    return object ? JSON.parse(object) : [];
+  });
+  const [securedObject, setSecuredObject] = useState<Object>({
+    type: "",
+    description: "",
   });
 
   const router = useRouter();
@@ -300,6 +338,50 @@ export const EditInvestigationForm = ({
     setSecuredDrugs(securedDrugs.filter((_, index) => index !== id));
   };
 
+  const addSecuredVehicle = (data: Vehicle) => {
+    if (
+      !data.brand ||
+      !data.model ||
+      !data.color ||
+      !data.plate ||
+      !data.type
+    ) {
+      toast.error("Todos los campos son requeridos");
+      return;
+    }
+
+    setSecuredVehicles([data, ...securedVehicles]);
+    setSecuredVehicle({
+      brand: "",
+      model: "",
+      type: "",
+      color: "",
+      plate: "",
+      caracteristics: "",
+    });
+  };
+
+  const removeSecuredVehicle = (id: number) => {
+    setSecuredVehicles(securedVehicles.filter((_, index) => index !== id));
+  };
+
+  const addSecuredObject = (data: Object) => {
+    if (!data.type || !data.description) {
+      toast.error("El tipo y la descripción del objeto son requeridos");
+      return;
+    }
+
+    setSecuredObjects([data, ...securedObjects]);
+    setSecuredObject({
+      type: "",
+      description: "",
+    });
+  };
+
+  const removeSecuredObject = (id: number) => {
+    setSecuredObjects(securedObjects.filter((_, index) => index !== id));
+  };
+
   const form = useForm<z.infer<typeof formSchemaEditInvestigation>>({
     resolver: zodResolver(formSchemaEditInvestigation),
     defaultValues: {
@@ -368,6 +450,16 @@ export const EditInvestigationForm = ({
       personsLocatedUNNA: investigation.investigation.personsLocatedUNNA ?? 0,
       personsLocatedSocialWork:
         investigation.investigation.personsLocatedSocialWork ?? 0,
+      informativeSheet: investigation.investigation.informativeSheet ?? 0,
+      officesMP: investigation.investigation.officesMP ?? 0,
+      deliveryDate: investigation.investigation.deliveryDate
+        ? parse(
+            investigation.investigation.deliveryDate,
+            "dd/MM/yyyy",
+            new Date()
+          )
+        : undefined,
+      deliveryHour: investigation.investigation.deliveryHour ?? "",
     },
   });
 
@@ -384,6 +476,8 @@ export const EditInvestigationForm = ({
       personsArrested: JSON.stringify(personsArrested),
       recoveredObjects: JSON.stringify(recoveredObjects),
       securedDrug: JSON.stringify(securedDrugs),
+      securedVehicles: JSON.stringify(securedVehicles),
+      securedObjects: JSON.stringify(securedObjects),
     };
 
     if (!auth?.id) {
@@ -1902,6 +1996,645 @@ export const EditInvestigationForm = ({
               </p>
             </div>
           )}
+        </div>
+        <div>
+          <h3 className="text-xl font-bold">Vehículos asegurados</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 items-end">
+          <div className="space-y-2">
+            <Label>Marca</Label>
+            <Select
+              value={securedVehicle.brand}
+              onValueChange={(value) =>
+                setSecuredVehicle({ ...securedVehicle, brand: value })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Marca" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="audi">Audi</SelectItem>
+                <SelectItem value="bmw">BMW</SelectItem>
+                <SelectItem value="chevrolet">Chevrolet</SelectItem>
+                <SelectItem value="dodge">Dodge</SelectItem>
+                <SelectItem value="fiat">Fiat</SelectItem>
+                <SelectItem value="ford">Ford</SelectItem>
+                <SelectItem value="honda">Honda</SelectItem>
+                <SelectItem value="hyundai">Hyundai</SelectItem>
+                <SelectItem value="jeep">Jeep</SelectItem>
+                <SelectItem value="kia">Kia</SelectItem>
+                <SelectItem value="mazda">Mazda</SelectItem>
+                <SelectItem value="mercedes-benz">Mercedes-Benz</SelectItem>
+                <SelectItem value="mitsubishi">Mitsubishi</SelectItem>
+                <SelectItem value="nissan">Nissan</SelectItem>
+                <SelectItem value="peugeot">Peugeot</SelectItem>
+                <SelectItem value="renault">Renault</SelectItem>
+                <SelectItem value="seat">SEAT</SelectItem>
+                <SelectItem value="subaru">Subaru</SelectItem>
+                <SelectItem value="suzuki">Suzuki</SelectItem>
+                <SelectItem value="toyota">Toyota</SelectItem>
+                <SelectItem value="volkswagen">Volkswagen</SelectItem>
+                <SelectItem value="volvo">Volvo</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label>Tipo</Label>
+            <Select
+              value={securedVehicle.type}
+              onValueChange={(value) =>
+                setSecuredVehicle({ ...securedVehicle, type: value })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Tipo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Audi</SelectLabel>
+                  <SelectItem value="audi-a3">A3</SelectItem>
+                  <SelectItem value="audi-a4">A4</SelectItem>
+                  <SelectItem value="audi-q5">Q5</SelectItem>
+                  <SelectItem value="audi-q7">Q7</SelectItem>
+                  <SelectItem value="audi-tt">TT</SelectItem>
+                </SelectGroup>
+
+                <SelectGroup>
+                  <SelectLabel>BMW</SelectLabel>
+                  <SelectItem value="bmw-3-series">Serie 3</SelectItem>
+                  <SelectItem value="bmw-5-series">Serie 5</SelectItem>
+                  <SelectItem value="bmw-x1">X1</SelectItem>
+                  <SelectItem value="bmw-x5">X5</SelectItem>
+                  <SelectItem value="bmw-z4">Z4</SelectItem>
+                </SelectGroup>
+
+                <SelectGroup>
+                  <SelectLabel>Chevrolet</SelectLabel>
+                  <SelectItem value="chevrolet-camaro">Camaro</SelectItem>
+                  <SelectItem value="chevrolet-malibu">Malibu</SelectItem>
+                  <SelectItem value="chevrolet-silverado">Silverado</SelectItem>
+                  <SelectItem value="chevrolet-suburban">Suburban</SelectItem>
+                  <SelectItem value="chevrolet-tahoe">Tahoe</SelectItem>
+                </SelectGroup>
+
+                <SelectGroup>
+                  <SelectLabel>Dodge</SelectLabel>
+                  <SelectItem value="dodge-challenger">Challenger</SelectItem>
+                  <SelectItem value="dodge-charger">Charger</SelectItem>
+                  <SelectItem value="dodge-durango">Durango</SelectItem>
+                  <SelectItem value="dodge-journey">Journey</SelectItem>
+                  <SelectItem value="dodge-ram">RAM</SelectItem>
+                </SelectGroup>
+
+                <SelectGroup>
+                  <SelectLabel>Ford</SelectLabel>
+                  <SelectItem value="ford-escape">Escape</SelectItem>
+                  <SelectItem value="ford-explorer">Explorer</SelectItem>
+                  <SelectItem value="ford-f150">F-150</SelectItem>
+                  <SelectItem value="ford-focus">Focus</SelectItem>
+                  <SelectItem value="ford-mustang">Mustang</SelectItem>
+                </SelectGroup>
+
+                <SelectGroup>
+                  <SelectLabel>Honda</SelectLabel>
+                  <SelectItem value="honda-accord">Accord</SelectItem>
+                  <SelectItem value="honda-civic">Civic</SelectItem>
+                  <SelectItem value="honda-crv">CR-V</SelectItem>
+                  <SelectItem value="honda-hrv">HR-V</SelectItem>
+                  <SelectItem value="honda-pilot">Pilot</SelectItem>
+                </SelectGroup>
+
+                <SelectGroup>
+                  <SelectLabel>Nissan</SelectLabel>
+                  <SelectItem value="nissan-altima">Altima</SelectItem>
+                  <SelectItem value="nissan-frontier">Frontier</SelectItem>
+                  <SelectItem value="nissan-maxima">Maxima</SelectItem>
+                  <SelectItem value="nissan-rogue">Rogue</SelectItem>
+                  <SelectItem value="nissan-titan">Titan</SelectItem>
+                </SelectGroup>
+
+                <SelectGroup>
+                  <SelectLabel>Toyota</SelectLabel>
+                  <SelectItem value="toyota-4runner">4Runner</SelectItem>
+                  <SelectItem value="toyota-camry">Camry</SelectItem>
+                  <SelectItem value="toyota-corolla">Corolla</SelectItem>
+                  <SelectItem value="toyota-prius">Prius</SelectItem>
+                  <SelectItem value="toyota-tundra">Tundra</SelectItem>
+                </SelectGroup>
+
+                <SelectGroup>
+                  <SelectLabel>Volkswagen</SelectLabel>
+                  <SelectItem value="volkswagen-jetta">Jetta</SelectItem>
+                  <SelectItem value="volkswagen-passat">Passat</SelectItem>
+                  <SelectItem value="volkswagen-taos">Taos</SelectItem>
+                  <SelectItem value="volkswagen-tiguan">Tiguan</SelectItem>
+                  <SelectItem value="volkswagen-virtus">Virtus</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label>Modelo</Label>
+            <Select
+              value={securedVehicle.model}
+              onValueChange={(value) =>
+                setSecuredVehicle({ ...securedVehicle, model: value })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Modelo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="2025">2025</SelectItem>
+                <SelectItem value="2024">2024</SelectItem>
+                <SelectItem value="2023">2023</SelectItem>
+                <SelectItem value="2022">2022</SelectItem>
+                <SelectItem value="2021">2021</SelectItem>
+                <SelectItem value="2020">2020</SelectItem>
+                <SelectItem value="2019">2019</SelectItem>
+                <SelectItem value="2018">2018</SelectItem>
+                <SelectItem value="2017">2017</SelectItem>
+                <SelectItem value="2016">2016</SelectItem>
+                <SelectItem value="2015">2015</SelectItem>
+                <SelectItem value="2014">2014</SelectItem>
+                <SelectItem value="2013">2013</SelectItem>
+                <SelectItem value="2012">2012</SelectItem>
+                <SelectItem value="2011">2011</SelectItem>
+                <SelectItem value="2010">2010</SelectItem>
+                <SelectItem value="2009">2009</SelectItem>
+                <SelectItem value="2008">2008</SelectItem>
+                <SelectItem value="2007">2007</SelectItem>
+                <SelectItem value="2006">2006</SelectItem>
+                <SelectItem value="2005">2005</SelectItem>
+                <SelectItem value="2004">2004</SelectItem>
+                <SelectItem value="2003">2003</SelectItem>
+                <SelectItem value="2002">2002</SelectItem>
+                <SelectItem value="2001">2001</SelectItem>
+                <SelectItem value="2000">2000</SelectItem>
+                <SelectItem value="1999">1999</SelectItem>
+                <SelectItem value="1998">1998</SelectItem>
+                <SelectItem value="1997">1997</SelectItem>
+                <SelectItem value="1996">1996</SelectItem>
+                <SelectItem value="1995">1995</SelectItem>
+                <SelectItem value="1994">1994</SelectItem>
+                <SelectItem value="1993">1993</SelectItem>
+                <SelectItem value="1992">1992</SelectItem>
+                <SelectItem value="1991">1991</SelectItem>
+                <SelectItem value="1990">1990</SelectItem>
+                <SelectItem value="1989">1989</SelectItem>
+                <SelectItem value="1988">1988</SelectItem>
+                <SelectItem value="1987">1987</SelectItem>
+                <SelectItem value="1986">1986</SelectItem>
+                <SelectItem value="1985">1985</SelectItem>
+                <SelectItem value="1984">1984</SelectItem>
+                <SelectItem value="1983">1983</SelectItem>
+                <SelectItem value="1982">1982</SelectItem>
+                <SelectItem value="1981">1981</SelectItem>
+                <SelectItem value="1980">1980</SelectItem>
+                <SelectItem value="1979">1979</SelectItem>
+                <SelectItem value="1978">1978</SelectItem>
+                <SelectItem value="1977">1977</SelectItem>
+                <SelectItem value="1976">1976</SelectItem>
+                <SelectItem value="1975">1975</SelectItem>
+                <SelectItem value="1974">1974</SelectItem>
+                <SelectItem value="1973">1973</SelectItem>
+                <SelectItem value="1972">1972</SelectItem>
+                <SelectItem value="1971">1971</SelectItem>
+                <SelectItem value="1970">1970</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label>Color</Label>
+            <Select
+              value={securedVehicle.color}
+              onValueChange={(value) =>
+                setSecuredVehicle({ ...securedVehicle, color: value })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Color" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Colores básicos</SelectLabel>
+                  <SelectItem value="negro">Negro</SelectItem>
+                  <SelectItem value="blanco">Blanco</SelectItem>
+                  <SelectItem value="gris">Gris</SelectItem>
+                  <SelectItem value="rojo">Rojo</SelectItem>
+                  <SelectItem value="azul">Azul</SelectItem>
+                </SelectGroup>
+                <SelectGroup>
+                  <SelectLabel>Colores metálicos</SelectLabel>
+                  <SelectItem value="plata">Plata</SelectItem>
+                  <SelectItem value="oro">Oro</SelectItem>
+                  <SelectItem value="bronce">Bronce</SelectItem>
+                  <SelectItem value="cobre">Cobre</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label>Matrícula</Label>
+            <Input
+              placeholder="ABC-123"
+              value={securedVehicle.plate}
+              onChange={(e) =>
+                setSecuredVehicle({
+                  ...securedVehicle,
+                  plate: e.target.value.toUpperCase(),
+                })
+              }
+            />
+          </div>
+          <div className="space-y-2 xl:col-span-3">
+            <Label>Características</Label>
+            <Textarea
+              placeholder="Escribe características del vehículo"
+              className="resize-none"
+              value={securedVehicle.caracteristics}
+              rows={3}
+              onChange={(e) =>
+                setSecuredVehicle({
+                  ...securedVehicle,
+                  caracteristics: e.target.value,
+                })
+              }
+            />
+          </div>
+          <div>
+            <Button
+              type="button"
+              className="w-full"
+              onClick={() => addSecuredVehicle(securedVehicle)}
+            >
+              Agregar
+            </Button>
+          </div>
+        </div>
+        <div>
+          {securedVehicles.length > 0 ? (
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {securedVehicles.map((vehicle, index) => {
+                return (
+                  <li key={index}>
+                    <Card>
+                      <CardHeader>
+                        <div className="inline-flex items-start justify-between">
+                          <div className="bg-secondary flex items-center justify-center w-20 h-20 rounded-2xl">
+                            <Image
+                              src="/icons/vehicles/secured-vehicle.png"
+                              alt="Vehicle"
+                              width={500}
+                              height={500}
+                              className="w-14 h-14 object-cover"
+                            />
+                          </div>
+                          <div>
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="outline"
+                              onClick={() => removeSecuredVehicle(index)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <ul className="space-y-2 bg-secondary p-3 rounded-xl">
+                          <li className="flex flex-col gap-1">
+                            <span className="text-muted-foreground text-sm">
+                              Marca
+                            </span>{" "}
+                            <span className="font-medium uppercase">
+                              {vehicle.brand}
+                            </span>
+                          </li>
+                          <li className="flex flex-col gap-1">
+                            <span className="text-muted-foreground text-sm">
+                              Tipo
+                            </span>{" "}
+                            <span className="font-medium">
+                              {formatText(vehicle.type)} - {vehicle.model}
+                            </span>
+                          </li>
+                          <li className="flex flex-col gap-1">
+                            <span className="text-muted-foreground text-sm">
+                              Color
+                            </span>{" "}
+                            <span className="font-medium capitalize">
+                              {vehicle.color}
+                            </span>
+                          </li>
+                          <li className="flex flex-col gap-1">
+                            <span className="text-muted-foreground text-sm">
+                              Matrícula
+                            </span>{" "}
+                            <span className="font-medium capitalize">
+                              {vehicle.plate}
+                            </span>
+                          </li>
+                          {vehicle.caracteristics && (
+                            <li className="flex flex-col gap-1">
+                              <span className="text-muted-foreground text-sm">
+                                Características
+                              </span>{" "}
+                              <span className="font-medium capitalize">
+                                {vehicle.caracteristics}
+                              </span>
+                            </li>
+                          )}
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <div className="my-10 text-center">
+              <p className="text-muted-foreground text-center inline-flex items-center">
+                Aquí aparecerán los vehículos asegurados{" "}
+                <ArrowDownToLine className="ml-2 w-4 h-4" />
+              </p>
+            </div>
+          )}
+        </div>
+        <div>
+          <h3 className="text-xl font-bold">Objetos asegurados</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 items-end">
+          <div className="space-y-2">
+            <Label>Tipo de objeto</Label>
+            <Select
+              value={securedObject.type}
+              onValueChange={(value) =>
+                setSecuredObject({ ...securedObject, type: value })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Tipo de objeto" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="cellphones">Celulares</SelectItem>
+                <SelectItem value="cash">Efectivo</SelectItem>
+                <SelectItem value="electronics">Electrónicos</SelectItem>
+                <SelectItem value="tools">Herramientas</SelectItem>
+                <SelectItem value="others">Otros</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2 xl:col-span-5">
+            <Label>Descripción</Label>
+            <Textarea
+              placeholder="Escribe detalles de los objetos asegurados"
+              className="resize-none"
+              value={securedObject.description}
+              rows={5}
+              onChange={(e) =>
+                setSecuredObject({
+                  ...securedObject,
+                  description: e.target.value,
+                })
+              }
+            />
+          </div>
+          <div>
+            <Button
+              type="button"
+              className="w-full"
+              onClick={() => addSecuredObject(securedObject)}
+            >
+              Agregar
+            </Button>
+          </div>
+        </div>
+        <div>
+          {securedObjects.length > 0 ? (
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {securedObjects.map((item, index) => {
+                let image = "/icons/objects/electronics.png";
+                let objectType = item.type;
+
+                switch (item.type) {
+                  case "electronics":
+                    image = "/icons/objects/electronics.png";
+                    objectType = "Electrónicos";
+                    break;
+
+                  case "cellphones":
+                    image = "/icons/objects/cellphones.png";
+                    objectType = "Celulares";
+                    break;
+
+                  case "tools":
+                    image = "/icons/objects/tools.png";
+                    objectType = "Herramientas";
+                    break;
+
+                  case "cash":
+                    image = "/icons/objects/cash.png";
+                    objectType = "Efectivo";
+                    break;
+
+                  case "others":
+                    image = "/icons/objects/others.png";
+                    objectType = "Otros";
+                    break;
+                }
+
+                return (
+                  <li key={index}>
+                    <Card>
+                      <CardHeader>
+                        <div className="inline-flex items-start justify-between">
+                          <div className="bg-secondary flex items-center justify-center w-20 h-20 rounded-2xl">
+                            <Image
+                              src={image}
+                              alt="Object"
+                              width={500}
+                              height={500}
+                              className="w-14 h-14 object-cover"
+                            />
+                          </div>
+                          <div>
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="outline"
+                              onClick={() => removeSecuredObject(index)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <ul className="space-y-2 bg-secondary p-3 rounded-xl">
+                          <li className="flex flex-col gap-1">
+                            <span className="text-muted-foreground text-sm">
+                              Tipo de objeto
+                            </span>{" "}
+                            <span className="font-medium">{objectType}</span>
+                          </li>
+                          <li className="flex flex-col gap-1">
+                            <span className="text-muted-foreground text-sm">
+                              Descripción
+                            </span>{" "}
+                            <span className="font-medium">
+                              {item.description}
+                            </span>
+                          </li>
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <div className="my-10 text-center">
+              <p className="text-muted-foreground text-center inline-flex items-center">
+                Aquí aparecerán los objetos asegurados{" "}
+                <ArrowDownToLine className="ml-2 w-4 h-4" />
+              </p>
+            </div>
+          )}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <FormField
+            control={form.control}
+            name="informativeSheet"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fichas informativas (cantidad)</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Fichas informativas (cantidad)"
+                    type="number"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="officesMP"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Oficios M.P. (cantidad)</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Oficios M.P. (cantidad)"
+                    type="number"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-end">
+          <FormField
+            control={form.control}
+            name="deliveryDate"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Fecha de entrega</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value
+                          ? format(
+                              field.value instanceof Date
+                                ? field.value
+                                : parse(field.value, "dd/MM/yyyy", new Date()),
+                              "dd MMM, yyyy",
+                              { locale: es }
+                            )
+                          : ""}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      locale={es}
+                      selected={field.value ? new Date(field.value) : undefined}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="deliveryHour"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Hora de entrega</FormLabel>
+                <Select
+                  onValueChange={(value) => field.onChange(value)}
+                  value={field.value ? String(field.value) : undefined}
+                  defaultValue={field.value ? String(field.value) : undefined}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Hora de entrega" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="01:00">01:00 Hrs</SelectItem>
+                    <SelectItem value="02:00">02:00 Hrs</SelectItem>
+                    <SelectItem value="03:00">03:00 Hrs</SelectItem>
+                    <SelectItem value="04:00">04:00 Hrs</SelectItem>
+                    <SelectItem value="05:00">05:00 Hrs</SelectItem>
+                    <SelectItem value="06:00">06:00 Hrs</SelectItem>
+                    <SelectItem value="07:00">07:00 Hrs</SelectItem>
+                    <SelectItem value="08:00">08:00 Hrs</SelectItem>
+                    <SelectItem value="09:00">09:00 Hrs</SelectItem>
+                    <SelectItem value="10:00">10:00 Hrs</SelectItem>
+                    <SelectItem value="11:00">11:00 Hrs</SelectItem>
+                    <SelectItem value="12:00">12:00 Hrs</SelectItem>
+                    <SelectItem value="13:00">13:00 Hrs</SelectItem>
+                    <SelectItem value="14:00">14:00 Hrs</SelectItem>
+                    <SelectItem value="15:00">15:00 Hrs</SelectItem>
+                    <SelectItem value="16:00">16:00 Hrs</SelectItem>
+                    <SelectItem value="17:00">17:00 Hrs</SelectItem>
+                    <SelectItem value="18:00">18:00 Hrs</SelectItem>
+                    <SelectItem value="19:00">19:00 Hrs</SelectItem>
+                    <SelectItem value="20:00">20:00 Hrs</SelectItem>
+                    <SelectItem value="21:00">21:00 Hrs</SelectItem>
+                    <SelectItem value="22:00">22:00 Hrs</SelectItem>
+                    <SelectItem value="23:00">23:00 Hrs</SelectItem>
+                    <SelectItem value="24:00">24:00 Hrs</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
         <Button
           type="submit"

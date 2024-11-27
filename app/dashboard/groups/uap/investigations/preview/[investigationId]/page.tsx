@@ -13,7 +13,12 @@ const InvestigationPDFId = async ({
 
   if (!data) return redirect("/dashboard/groups/uap/investigations");
 
-  return <InvestigationDocument data={data} />;
+  return (
+    <InvestigationDocument
+      data={data}
+      className="max-w-2xl shadow-md mx-auto p-4 border border-border rounded-lg"
+    />
+  );
 };
 
 export default InvestigationPDFId;

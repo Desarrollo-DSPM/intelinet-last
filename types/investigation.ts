@@ -173,4 +173,18 @@ export const formSchemaEditInvestigation = z.object({
     .int(),
   recoveredObjects: z.string().optional(),
   securedDrug: z.string().optional(),
+  securedVehicles: z.string().optional(),
+  securedObjects: z.string().optional(),
+  informativeSheet: z.coerce
+    .number({
+      required_error: "La cantidad de fichas informativas es requerida",
+    })
+    .int(),
+  officesMP: z.coerce
+    .number({
+      required_error: "La cantidad de oficios M.P. es requerida",
+    })
+    .int(),
+  deliveryDate: z.date().optional(),
+  deliveryHour: z.string().optional(),
 });

@@ -3,11 +3,11 @@
 import { db } from "@/lib/db/db";
 import { eq } from "drizzle-orm";
 
-import { EventType, investigationsTypes } from "@/lib/db/schema";
+import { InvestigationType, investigationsTypes } from "@/lib/db/schema";
 
 export const getAllInvestigationsTypes = async () => {
   try {
-    const res: EventType[] = await db
+    const res: InvestigationType[] = await db
       .select()
       .from(investigationsTypes)
       .where(eq(investigationsTypes.isActive, 1));

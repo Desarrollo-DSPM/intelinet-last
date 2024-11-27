@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef } from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -8,20 +8,25 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { InvestigationWithDetails } from "@/lib/db/schema";
 
-import { Ellipsis, File, Pencil, Trash2 } from "lucide-react";
-import { DeleteUserModal } from "@/components/ui-custom/modals/delete-user-modal";
+import { Ellipsis, Eye, Pencil, Printer } from "lucide-react";
+import { useReactToPrint } from "react-to-print";
+import { InvestigationDocument } from "@/components/ui-custom/investigation-document";
 
 interface DataTableRowActionsProps {
   data: InvestigationWithDetails;
 }
 
 export function DataTableRowActions({ data }: DataTableRowActionsProps) {
-  const [openModalDeleteUser, setOpenModalDeleteUser] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const reactToPrintFn = useReactToPrint({
+    contentRef,
+    documentTitle: "Investigación UAP",
+  });
 
   return (
     <>
@@ -39,7 +44,7 @@ export function DataTableRowActions({ data }: DataTableRowActionsProps) {
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/groups/uap/investigations/${data.investigation.id}`}
-              className="items-center gap-2"
+              className="items-center"
             >
               <Pencil className="w-4 h-4 mr-2" />
               Editar
@@ -47,28 +52,25 @@ export function DataTableRowActions({ data }: DataTableRowActionsProps) {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link
-              href={`/dashboard/groups/uap/investigations/pdfs/${data.investigation.id}`}
-              className="items-center gap-2"
+              href={`/dashboard/groups/uap/investigations/preview/${data.investigation.id}`}
+              className="items-center"
             >
-              <File className="w-4 h-4 mr-2" />
-              Descargar PDF
+              <Eye className="w-4 h-4 mr-2" />
+              Vista previa
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
           <DropdownMenuItem
-            onClick={() => setOpenModalDeleteUser(true)}
-            className="items-center gap-2"
+            className="flex items-center"
+            onClick={() => reactToPrintFn()}
           >
-            <Trash2 className="w-4 h-4 mr-2" />
-            Eliminar
+            <Printer className="size-4 mr-2" />
+            Imprimir
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      {/* <DeleteUserModal
-        isOpen={openModalDeleteUser}
-        onClose={setOpenModalDeleteUser}
-        user={data}
-      /> */}
+      <div className="hidden">
+        <InvestigationDocument data={data} contentRef={contentRef} />
+      </div>
     </>
   );
 }

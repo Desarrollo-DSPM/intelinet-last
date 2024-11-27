@@ -61,6 +61,12 @@ export const editInvestigation = async ({
       personsLocatedSocialWork,
       recoveredObjects,
       securedDrug,
+      securedVehicles,
+      securedObjects,
+      informativeSheet,
+      officesMP,
+      deliveryDate,
+      deliveryHour,
     } = values;
 
     // Formateamos las fechas a dd/MM/yyyy
@@ -72,6 +78,12 @@ export const editInvestigation = async ({
         new Date(arrestOperationDate),
         "dd/MM/yyyy"
       );
+    }
+
+    let deliveryDateFormatted = "";
+
+    if (deliveryDate) {
+      deliveryDateFormatted = format(new Date(deliveryDate), "dd/MM/yyyy");
     }
 
     await db
@@ -120,6 +132,12 @@ export const editInvestigation = async ({
         personsLocatedSocialWork,
         recoveredObjects,
         securedDrug,
+        securedVehicles,
+        securedObjects,
+        informativeSheet,
+        officesMP,
+        deliveryDate: deliveryDateFormatted.toString(),
+        deliveryHour,
         createdAt: new Date(),
         updatedAt: new Date(),
       })
