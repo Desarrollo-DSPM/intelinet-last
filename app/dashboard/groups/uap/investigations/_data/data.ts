@@ -1,0 +1,36 @@
+import { InvestigationType } from "@/lib/db/schema";
+
+import {
+  CheckCircledIcon,
+  CrossCircledIcon,
+  StopwatchIcon,
+} from "@radix-ui/react-icons";
+
+export const formatInvestigationTypes = (
+  investigationTypes: Pick<InvestigationType, "name">[]
+) => {
+  return investigationTypes.map((investigationType) => {
+    return {
+      value: investigationType.name,
+      label: investigationType.name,
+    };
+  });
+};
+
+export const statuses = [
+  {
+    value: "in-progress",
+    label: "En progreso",
+    icon: StopwatchIcon,
+  },
+  {
+    value: "done",
+    label: "Terminado",
+    icon: CheckCircledIcon,
+  },
+  {
+    value: "canceled",
+    label: "Canceleda",
+    icon: CrossCircledIcon,
+  },
+];

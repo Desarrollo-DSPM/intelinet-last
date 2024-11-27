@@ -70,3 +70,21 @@
     width: 0;
   }
 }
+
+@layer base {
+  img {
+    display: initial;
+  }
+}
+
+@media print {
+  #investigationPdf {
+    zoom: 1 !important;
+    padding: 0;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 0.6cm;
+}

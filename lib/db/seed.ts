@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { users, departments, eventTypes } from "./schema";
+import { users, departments, investigationsTypes } from "./schema";
 import { hashPassword } from "@/lib/auth/session";
 import { MySqlTable, TableConfig } from "drizzle-orm/mysql-core";
 
@@ -35,7 +35,7 @@ async function seed() {
     },
   ]);
 
-  await db.insert(eventTypes as MySqlTable<TableConfig>).values([
+  await db.insert(investigationsTypes as MySqlTable<TableConfig>).values([
     {
       name: "ABANDONO DE PERSONA",
       createdAt: new Date(),
@@ -1285,7 +1285,7 @@ async function seed() {
       name: "VIOLENCIA FAMILIAR",
       createdAt: new Date(),
       updatedAt: new Date(),
-    }
+    },
   ]);
 
   console.log("✅ Usuario inicial creado con exito.");

@@ -28,14 +28,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const userPromise = getUser();
+  const auth = getUser();
+
+  if (!auth) {
+    return null;
+  }
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider userPromise={userPromise}>
+        <AuthProvider userPromise={auth}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

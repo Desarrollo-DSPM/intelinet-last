@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import {
   Building2,
   CircleDot,
-  FileText,
+  Folder,
   GitBranch,
   House,
   Users,
@@ -59,14 +59,14 @@ export const Sidebar = () => {
             {auth?.role === "admin" && (
               <>
                 <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
-                  Administradores
+                  Menu
                 </li>
                 <li>
                   <Link
-                    href="/dashboard/users"
+                    href="/dashboard/admin/users"
                     className={cn(
                       "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                      pathname.startsWith("/dashboard/users") &&
+                      pathname.startsWith("/dashboard/admin/users") &&
                         "bg-secondary font-medium"
                     )}
                   >
@@ -76,10 +76,10 @@ export const Sidebar = () => {
                 </li>
                 <li>
                   <Link
-                    href="/dashboard/departments"
+                    href="/dashboard/admin/departments"
                     className={cn(
                       "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                      pathname.startsWith("/dashboard/departments") &&
+                      pathname.startsWith("/dashboard/admin/departments") &&
                         "bg-secondary font-medium"
                     )}
                   >
@@ -87,49 +87,44 @@ export const Sidebar = () => {
                     <span>Departamentos</span>
                   </Link>
                 </li>
+                <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
+                  Coordinación de inteligencia
+                </li>
+                <li>
+                  <Link
+                    href="/dashboard/admin/investigations"
+                    className={cn(
+                      "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
+                      pathname.startsWith("/dashboard/admin/investigations") &&
+                        "bg-secondary font-medium"
+                    )}
+                  >
+                    <Folder className="h-4 w-4" />
+                    <span>Investigaciones</span>
+                  </Link>
+                </li>
               </>
             )}
-            {Array.isArray(JSON.parse(auth?.modules || "[]")) &&
-              JSON.parse(auth?.modules || "[]").length > 0 && (
-                <>
-                  <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
-                    Coordinación de inteligencia
-                  </li>
-                  <li>
-                    <Link
-                      href="/dashboard/coordinacion/init"
-                      className={cn(
-                        "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                        pathname.startsWith("/dashboard/coordinacion/init") &&
-                          "bg-secondary font-medium"
-                      )}
-                    >
-                      <FileText className="h-4 w-4" />
-                      <span>Formato de inicio</span>
-                    </Link>
-                  </li>
-                  <>
-                    <li className="my-4 ml-4 text-xs uppercase font-bold text-muted-foreground">
-                      Grupos especiales
-                    </li>
-                    {auth?.modules.includes("uap") && (
-                      <li>
-                        <Link
-                          href="/dashboard/coordinacion/uap"
-                          className={cn(
-                            "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                            pathname.startsWith("/dashboard/coordinacion/uap") &&
-                              "bg-secondary font-medium"
-                          )}
-                        >
-                          <CircleDot className="h-4 w-4" />
-                          <span>UAP</span>
-                        </Link>
-                      </li>
+            {auth?.role === "admin" || auth?.modules.includes("uap") ? (
+              <>
+                <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
+                  Grupos especiales
+                </li>
+                <li>
+                  <Link
+                    href="/dashboard/groups/uap"
+                    className={cn(
+                      "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
+                      pathname.startsWith("/dashboard/groups/uap") &&
+                        "bg-secondary font-medium"
                     )}
-                  </>
-                </>
-              )}
+                  >
+                    <CircleDot className="h-4 w-4" />
+                    <span>UAP</span>
+                  </Link>
+                </li>
+              </>
+            ) : null}
           </ul>
         </section>
       </aside>

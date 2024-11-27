@@ -18,10 +18,11 @@ export const NavUserDetails = ({ data }: NavUserDetailsProps) => {
       <ul className="flex items-center gap-1 flex-wrap">
         <li>
           <Link
-            href={`/dashboard/users/${data?.id}`}
+            href={`/dashboard/admin/users/${data?.id}`}
             className={cn(
               "flex items-center py-2 px-4 rounded-lg hover:bg-secondary transition-colors duration-300",
-              pathname.match(/^\/dashboard\/users\/\d+$/) && "bg-secondary"
+              pathname.match(/^\/dashboard\/admin\/users\/\d+$/) &&
+                "bg-secondary"
             )}
           >
             <Info className="w-4 h-4 mr-3" />
@@ -30,10 +31,10 @@ export const NavUserDetails = ({ data }: NavUserDetailsProps) => {
         </li>
         <li>
           <Link
-            href={`/dashboard/users/${data?.id}/roles`}
+            href={`/dashboard/admin/users/${data?.id}/roles`}
             className={cn(
               "flex items-center py-2 px-4 rounded-lg hover:bg-secondary transition-colors duration-300",
-              pathname.match(/^\/dashboard\/users\/\d+\/roles$/) &&
+              pathname.match(/^\/dashboard\/admin\/users\/\d+\/roles$/) &&
                 "bg-secondary"
             )}
           >
@@ -43,10 +44,10 @@ export const NavUserDetails = ({ data }: NavUserDetailsProps) => {
         </li>
         <li>
           <Link
-            href={`/dashboard/users/${data?.id}/modules`}
+            href={`/dashboard/admin/users/${data?.id}/modules`}
             className={cn(
               "flex items-center py-2 px-4 rounded-lg hover:bg-secondary transition-colors duration-300",
-              pathname.match(/^\/dashboard\/users\/\d+\/modules$/) &&
+              pathname.match(/^\/dashboard\/admin\/users\/\d+\/modules$/) &&
                 "bg-secondary"
             )}
           >
