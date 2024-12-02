@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "8319e2d7-e734-4db5-9ab5-0dbebc15d0b9",
+  "id": "b40d7100-9c80-4e89-b1e6-c4d1eb65c70c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "departments": {
@@ -459,6 +459,14 @@
           "notNull": false,
           "autoincrement": false,
           "default": "'in-progress'"
+        },
+        "shared": {
+          "name": "shared",
+          "type": "tinyint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 0
         },
         "created_at": {
           "name": "created_at",
