@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { InvestigationWithDetails } from "@/lib/db/schema";
 
-import { Ellipsis, Eye, Pencil, Printer } from "lucide-react";
+import { Ellipsis, Eye, Pencil, Printer, Share2 } from "lucide-react";
 import { useReactToPrint } from "react-to-print";
 import { InvestigationDocument } from "@/components/ui-custom/investigation-document";
 
@@ -46,7 +46,7 @@ export function DataTableRowActions({ data }: DataTableRowActionsProps) {
               href={`/dashboard/groups/uap/investigations/${data.investigation.id}`}
               className="items-center"
             >
-              <Pencil className="w-4 h-4 mr-2" />
+              <Pencil className="w-4 h-4 mr-4" />
               Editar
             </Link>
           </DropdownMenuItem>
@@ -55,7 +55,7 @@ export function DataTableRowActions({ data }: DataTableRowActionsProps) {
               href={`/dashboard/groups/uap/investigations/preview/${data.investigation.id}`}
               className="items-center"
             >
-              <Eye className="w-4 h-4 mr-2" />
+              <Eye className="w-4 h-4 mr-4" />
               Vista previa
             </Link>
           </DropdownMenuItem>
@@ -63,8 +63,15 @@ export function DataTableRowActions({ data }: DataTableRowActionsProps) {
             className="flex items-center"
             onClick={() => reactToPrintFn()}
           >
-            <Printer className="size-4 mr-2" />
+            <Printer className="size-4 mr-4" />
             Imprimir
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="flex items-center"
+            onClick={() => reactToPrintFn()}
+          >
+            <Share2 className="size-4 mr-4" />
+            Compartir
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

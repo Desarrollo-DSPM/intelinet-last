@@ -115,6 +115,7 @@ export const investigations = mysqlTable("investigations", {
   deliveryDate: varchar("delivery_date", { length: 50 }),
   deliveryHour: varchar("delivery_hour", { length: 50 }),
   status: varchar("status", { length: 255 }).default("in-progress"),
+  shared: tinyint("shared").default(0),
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
 });

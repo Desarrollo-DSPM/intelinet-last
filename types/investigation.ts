@@ -188,3 +188,47 @@ export const formSchemaEditInvestigation = z.object({
   deliveryDate: z.date().optional(),
   deliveryHour: z.string().optional(),
 });
+
+export type People = {
+  name: string;
+  address: string;
+  plate: string;
+  phone: string;
+};
+
+export type SocialNetwork = {
+  name: string;
+  url: string;
+};
+
+export type PersonArrested = {
+  name: string;
+  pandilla: string;
+  criminalGroup: string;
+};
+
+export type RecoveredObject = {
+  typeRecovered: string;
+  typeWeapon: string;
+  quantity: number;
+};
+
+export type SecuredDrug = {
+  type: string;
+  unit: string;
+  quantity: number;
+};
+
+export type Vehicle = {
+  brand: string;
+  model: string;
+  type: string;
+  color: string;
+  plate: string;
+  caracteristics: string;
+};
+
+export type Object = {
+  type: string;
+  description: string;
+};

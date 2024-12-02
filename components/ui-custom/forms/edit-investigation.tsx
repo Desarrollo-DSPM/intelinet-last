@@ -57,7 +57,16 @@ import {
   UserWithDepartment,
 } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
-import { formSchemaEditInvestigation } from "@/types/investigation";
+import {
+  formSchemaEditInvestigation,
+  Object,
+  People,
+  PersonArrested,
+  RecoveredObject,
+  SecuredDrug,
+  SocialNetwork,
+  Vehicle,
+} from "@/types/investigation";
 import { ArrowDownToLine, CalendarIcon, Loader, Trash2, X } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
@@ -77,53 +86,10 @@ interface EditInvestigationFormProps {
   investigation: InvestigationWithDetails;
 }
 
-interface People {
-  name: string;
-  address: string;
-  plate: string;
-  phone: string;
-}
-
-interface SocialNetwork {
-  name: string;
-  url: string;
-}
-
-interface PersonsArrested {
-  name: string;
-  pandilla: string;
-  criminalGroup: string;
-}
-
-interface RecoveredObject {
-  typeRecovered: string;
-  typeWeapon: string;
-  quantity: number;
-}
-
-interface SecuredDrug {
-  type: string;
-  unit: string;
-  quantity: number;
-}
-
-interface Vehicle {
-  brand: string;
-  model: string;
-  type: string;
-  color: string;
-  plate: string;
-  caracteristics: string;
-}
-
-interface Object {
-  type: string;
-  description: string;
-}
-
 export const EditInvestigationForm = ({
   investigation,
 }: EditInvestigationFormProps) => {
+  const [isMounted, setIsMounted] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [users, setUsers] = useState<UserWithDepartment[]>([]);
   const [investigationTypes, setInvestigationTypes] = useState<
@@ -158,13 +124,13 @@ export const EditInvestigationForm = ({
     name: "",
     url: "",
   });
-  const [personsArrested, setPersonsArrested] = useState<PersonsArrested[]>(
+  const [personsArrested, setPersonsArrested] = useState<PersonArrested[]>(
     () => {
       const personsArrested = investigation.investigation.personsArrested;
       return personsArrested ? JSON.parse(personsArrested) : [];
     }
   );
-  const [personArrested, setPersonArrested] = useState<PersonsArrested>({
+  const [personArrested, setPersonArrested] = useState<PersonArrested>({
     name: "",
     pandilla: "",
     criminalGroup: "",
@@ -284,7 +250,7 @@ export const EditInvestigationForm = ({
     setSocialNetworks(socialNetworks.filter((_, index) => index !== id));
   };
 
-  const addPersonArrested = (data: PersonsArrested) => {
+  const addPersonArrested = (data: PersonArrested) => {
     if (!data.name || !data.pandilla || !data.criminalGroup) {
       toast.error("El nombre, pandilla y grupo criminal son requeridos");
       return;
@@ -499,6 +465,14 @@ export const EditInvestigationForm = ({
       setIsLoading(false);
       toast.error(res.message);
     }
+  }
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
   }
 
   return (

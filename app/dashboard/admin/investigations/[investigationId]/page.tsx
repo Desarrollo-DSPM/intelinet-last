@@ -1,7 +1,5 @@
 import { getInvestigationsById } from "@/actions/investigations/get-investigation-by-id";
-import { InvestigationDocument } from "@/components/ui-custom/investigation-document";
-import { redirect } from "next/navigation";
-
+import { EditInvestigationForm } from "@/components/ui-custom/forms/edit-investigation";
 import { Title } from "@/components/ui-custom/title";
 import {
   Breadcrumb,
@@ -11,22 +9,25 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { redirect } from "next/navigation";
 
-const InvestigationPDFId = async ({
+export default async function InvestigationsPage({
   params,
 }: {
   params: { investigationId: string };
-}) => {
+}) {
   const { data } = await getInvestigationsById({
     id: Number(params.investigationId),
   });
 
-  if (!data) return redirect("/dashboard/groups/uap/investigations");
+  if (!data) {
+    redirect("/dashboard/admin/investigations");
+  }
 
   return (
-    <>
+    <div>
       <div className="flex flex-col md:flex-row items-center justify-between gap-5 mb-10">
-        <Title>Vista previa</Title>
+        <Title>Editar Investigación</Title>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -34,23 +35,18 @@ const InvestigationPDFId = async ({
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/dashboard/groups/uap/investigations">
+              <BreadcrumbLink href="/dashboard/admin/investigations">
                 Investigaciones
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Vista previa</BreadcrumbPage>
+              <BreadcrumbPage>Editar investigación</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <InvestigationDocument
-        data={data}
-        className="max-w-2xl shadow-md mx-auto p-4 border border-border rounded-lg"
-      />
-    </>
+      <EditInvestigationForm investigation={data} />
+    </div>
   );
-};
-
-export default InvestigationPDFId;
+}

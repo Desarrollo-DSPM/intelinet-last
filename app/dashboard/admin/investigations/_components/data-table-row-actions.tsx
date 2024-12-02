@@ -11,13 +11,27 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { InvestigationWithDetails } from "@/lib/db/schema";
 
-import { Ellipsis, Pencil } from "lucide-react";
+import { Ellipsis, Eye, Pencil, Printer, Share2 } from "lucide-react";
+import { useRef, useState } from "react";
+import { useReactToPrint } from "react-to-print";
+import { InvestigationDocument } from "@/components/ui-custom/investigation-document";
+import { ModalSharedInvestigation } from "@/components/ui-custom/modals/shared-investigation-modal";
+import { copyToClipboard } from "@/helpers/copy-clipboard";
 
 interface DataTableRowActionsProps {
   data: InvestigationWithDetails;
 }
 
 export function DataTableRowActions({ data }: DataTableRowActionsProps) {
+  const [openModalSharedInvestigation, setOpenModalSharedInvestigation] =
+    useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const reactToPrintFn = useReactToPrint({
+    contentRef,
+    documentTitle: "Investigación UAP",
+  });
+
   return (
     <>
       <DropdownMenu>
@@ -30,18 +44,64 @@ export function DataTableRowActions({ data }: DataTableRowActionsProps) {
             <span className="sr-only">Abrir menu</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[80px]">
+        <DropdownMenuContent align="end">
           <DropdownMenuItem asChild>
             <Link
-              href={`/dashboard/users/${data.investigation.id}`}
-              className="items-center gap-2"
+              href={`/dashboard/admin/investigations/${data.investigation.id}`}
+              className="items-center"
             >
-              <Pencil className="w-4 h-4 mr-2" />
+              <Pencil className="w-4 h-4 mr-4" />
               Editar
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/dashboard/admin/investigations/preview/${data.investigation.id}`}
+              className="items-center"
+            >
+              <Eye className="w-4 h-4 mr-4" />
+              Vista previa
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="flex items-center"
+            onClick={() => reactToPrintFn()}
+          >
+            <Printer className="size-4 mr-4" />
+            Imprimir
+          </DropdownMenuItem>
+          {data.investigation.shared === 0 ? (
+            <DropdownMenuItem
+              className="flex items-center"
+              onClick={() => setOpenModalSharedInvestigation(true)}
+            >
+              <Share2 className="size-4 mr-4" />
+              Compartir
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem
+              onClick={() =>
+                copyToClipboard(
+                  `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/investigations/${data.investigation.id}/shared`
+                )
+              }
+            >
+              <span className="flex items-center">
+                <Share2 className="size-4 mr-4" />
+                Copiar URL
+              </span>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
+      <div className="hidden">
+        <InvestigationDocument data={data} contentRef={contentRef} />
+      </div>
+      <ModalSharedInvestigation
+        isOpen={openModalSharedInvestigation}
+        onClose={setOpenModalSharedInvestigation}
+        investigationId={data.investigation.id}
+      />
     </>
   );
 }

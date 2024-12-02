@@ -61,6 +61,7 @@ CREATE TABLE `investigations` (
 	`delivery_date` varchar(50),
 	`delivery_hour` varchar(50),
 	`status` varchar(255) DEFAULT 'in-progress',
+	`shared` tinyint DEFAULT 0,
 	`created_at` timestamp NOT NULL,
 	`updated_at` timestamp NOT NULL,
 	CONSTRAINT `investigations_id` PRIMARY KEY(`id`)

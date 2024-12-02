@@ -1,7 +1,5 @@
 import { getInvestigationsById } from "@/actions/investigations/get-investigation-by-id";
 import { InvestigationDocument } from "@/components/ui-custom/investigation-document";
-import { redirect } from "next/navigation";
-
 import { Title } from "@/components/ui-custom/title";
 import {
   Breadcrumb,
@@ -11,6 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { redirect } from "next/navigation";
 
 const InvestigationPDFId = async ({
   params,
@@ -21,7 +20,7 @@ const InvestigationPDFId = async ({
     id: Number(params.investigationId),
   });
 
-  if (!data) return redirect("/dashboard/groups/uap/investigations");
+  if (!data) return redirect("/dashboard/admin/investigations");
 
   return (
     <>
@@ -34,7 +33,7 @@ const InvestigationPDFId = async ({
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/dashboard/groups/uap/investigations">
+              <BreadcrumbLink href="/dashboard/admin/investigations">
                 Investigaciones
               </BreadcrumbLink>
             </BreadcrumbItem>
