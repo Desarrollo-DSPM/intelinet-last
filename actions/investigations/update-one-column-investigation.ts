@@ -5,11 +5,17 @@ import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db/db";
 import { Investigation, investigations } from "@/lib/db/schema";
 
-interface SharedInvesigationProps {
+interface UpdateInvestigationOneColumnProps {
   id: Investigation["id"];
+  column: keyof Investigation;
+  value: string | number | boolean;
 }
 
-export const sharedInvestigation = async ({ id }: SharedInvesigationProps) => {
+export const updateInvestigationOneColumn = async ({
+  id,
+  column,
+  value,
+}: UpdateInvestigationOneColumnProps) => {
   try {
     const investigation = await db.query.investigations.findFirst({
       where: and(eq(investigations.id, id)),
@@ -23,15 +29,15 @@ export const sharedInvestigation = async ({ id }: SharedInvesigationProps) => {
       };
     }
 
-    // Borrado logico
+    // Actualización del campo compartido
     await db
       .update(investigations)
       .set({
-        shared: 1,
+        [column]: value,
       })
       .where(and(eq(investigations.id, id)));
 
-    return { response: "success", message: "Investigación compartida" };
+    return { response: "success", message: "Investigación actualizada" };
   } catch (error) {
     return { response: "error", message: `Ha ocurrido un error: ${error}` };
   }

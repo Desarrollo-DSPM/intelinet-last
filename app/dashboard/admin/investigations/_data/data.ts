@@ -25,11 +25,11 @@ export const statuses = [
   },
   {
     value: "done",
-    label: "Terminado",
+    label: "Completada",
     icon: CheckCircledIcon,
   },
   {
-    value: "canceled",
+    value: "cancelled",
     label: "Canceleda",
     icon: CrossCircledIcon,
   },

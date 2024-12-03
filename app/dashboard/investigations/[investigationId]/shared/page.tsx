@@ -1,14 +1,6 @@
 import { getInvestigationsById } from "@/actions/investigations/get-investigation-by-id";
 import { InvestigationDocument } from "@/components/ui-custom/investigation-document";
 import { Title } from "@/components/ui-custom/title";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { redirect } from "next/navigation";
 
 const SharedInvestigation = async ({
@@ -20,7 +12,12 @@ const SharedInvestigation = async ({
     id: Number(params.investigationId),
   });
 
-  if (!data || data.investigation.shared === 0) return redirect("/dashboard");
+  if (
+    !data ||
+    data.investigation.shared === 0 ||
+    data.investigation.status === "cancelled"
+  )
+    return redirect("/dashboard");
 
   return (
     <>

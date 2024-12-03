@@ -16,23 +16,25 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { updateInvestigationOneColumn } from "@/actions/investigations/update-one-column-investigation";
 
-interface ModalSharedInvestigationProps {
+interface ModalUpdateStatusInvestigationProps {
   isOpen: boolean;
   onClose: Dispatch<SetStateAction<boolean>>;
   investigationId: Investigation["id"];
+  status: Investigation["status"];
 }
 
-export const ModalSharedInvestigation = ({
+export const ModalUpdateStatusInvestigation = ({
   isOpen,
   onClose,
   investigationId,
-}: ModalSharedInvestigationProps) => {
+  status,
+}: ModalUpdateStatusInvestigationProps) => {
   const router = useRouter();
-  const handleSharedInvestigation = async () => {
+  const handleUpdateInvestigation = async () => {
     const res = await updateInvestigationOneColumn({
       id: investigationId,
-      column: "shared",
-      value: 1,
+      column: "status",
+      value: status ?? "in-progress",
     });
 
     if (res?.response === "success") {
@@ -49,11 +51,15 @@ export const ModalSharedInvestigation = ({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            ¿Estás seguro de compartir la investigación?
+            {status === "done"
+              ? "¿Estás seguro de completar la investigación?"
+              : "¿Estás seguro de cancelar la investigación?"}
           </DialogTitle>
         </DialogHeader>
         <DialogDescription>
-          Todo usuario que tenga la url podrá visualizar la investigación.
+          {status === "done"
+            ? "Al completar la investigación, no podrás realizar más cambios."
+            : "Al cancelar la investigación, no podrás realizar más cambios."}
         </DialogDescription>
         <DialogFooter>
           <Button
@@ -63,8 +69,14 @@ export const ModalSharedInvestigation = ({
           >
             Cancelar
           </Button>
-          <Button type="button" onClick={handleSharedInvestigation}>
-            Si, compartir
+          <Button
+            type="button"
+            variant={status === "done" ? "default" : "destructive"}
+            onClick={handleUpdateInvestigation}
+          >
+            {status === "done"
+              ? "Si, completar investigación"
+              : "Si, cancelar investigación"}
           </Button>
         </DialogFooter>
       </DialogContent>
