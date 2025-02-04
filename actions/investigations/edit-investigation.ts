@@ -1,21 +1,38 @@
 "use server";
 
 import { db } from "@/lib/db/db";
-import { Investigation, investigations } from "@/lib/db/schema";
+import {
+  Investigation,
+  investigations,
+  InvestigationWithDetails,
+} from "@/lib/db/schema";
 import { formSchemaEditInvestigation } from "@/types/investigation";
 import { format } from "date-fns";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
+import { getUser } from "@/actions/users/get-me";
 
 interface EditInvesigationProps {
+  createdById: InvestigationWithDetails["createdBy"]["id"];
   id: Investigation["id"];
   values: z.infer<typeof formSchemaEditInvestigation>;
 }
 
 export const editInvestigation = async ({
+  createdById,
   id,
   values,
 }: EditInvesigationProps) => {
+  const userSession = await getUser();
+
+  // Validamos que el usuario de la sesión sea el creador de la investigación o un admin
+  if (userSession?.id !== createdById && userSession?.role !== "admin") {
+    return {
+      response: "error",
+      message: "No tienes permisos para editar la investigación",
+    };
+  }
+
   try {
     const {
       supportUserId,

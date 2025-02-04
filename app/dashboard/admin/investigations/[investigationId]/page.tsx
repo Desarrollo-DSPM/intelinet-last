@@ -1,5 +1,6 @@
 import { getInvestigationsById } from "@/actions/investigations/get-investigation-by-id";
-import { EditInvestigationForm } from "@/components/ui-custom/forms/edit-investigation";
+import { getUser } from "@/actions/users/get-me";
+import { EditInvestigationForm } from "@/components/ui-custom/forms/edit-investigation/edit-investigation";
 import { Title } from "@/components/ui-custom/title";
 import {
   Breadcrumb,
@@ -9,6 +10,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { validatePermissions } from "@/helpers/validate-permissions";
 import { redirect } from "next/navigation";
 
 export default async function InvestigationsPage({
@@ -16,6 +18,12 @@ export default async function InvestigationsPage({
 }: {
   params: { investigationId: string };
 }) {
+  const user = await getUser();
+
+  validatePermissions(user, {
+    requiredRole: "admin",
+  });
+
   const { data } = await getInvestigationsById({
     id: Number(params.investigationId),
   });

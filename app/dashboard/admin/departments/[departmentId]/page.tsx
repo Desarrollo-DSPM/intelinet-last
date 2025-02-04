@@ -11,12 +11,20 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { getUser } from "@/actions/users/get-me";
+import { validatePermissions } from "@/helpers/validate-permissions";
 
 const EditDepartmentPage = async ({
   params,
 }: {
   params: { departmentId: string };
 }) => {
+  const user = await getUser();
+
+  validatePermissions(user, {
+    requiredRole: "admin",
+  });
+
   const { data } = await getDepartmentById(Number(params.departmentId));
 
   if (!data) return redirect("/dashboard/admin/departments");

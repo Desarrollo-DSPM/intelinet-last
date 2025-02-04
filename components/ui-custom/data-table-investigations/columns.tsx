@@ -6,9 +6,11 @@ import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 import { InvestigationWithDetails } from "@/lib/db/schema";
 import { dateFormat } from "@/helpers/dates";
-import { statuses } from "../_data/data";
+import { statuses } from "./data";
 
-export const columns: ColumnDef<InvestigationWithDetails>[] = [
+export const columns = (
+  group: string
+): ColumnDef<InvestigationWithDetails>[] => [
   {
     accessorFn: (row: InvestigationWithDetails) => row.investigation.id,
     id: "id",
@@ -42,7 +44,7 @@ export const columns: ColumnDef<InvestigationWithDetails>[] = [
     ),
   },
   {
-    accessorFn: (row: InvestigationWithDetails) => row.investigation.group,
+    accessorFn: (row: InvestigationWithDetails) => group,
     id: "group",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Grupo" />
@@ -57,7 +59,7 @@ export const columns: ColumnDef<InvestigationWithDetails>[] = [
     accessorFn: (row: InvestigationWithDetails) => row.investigation.district,
     id: "district",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Grupo" />
+      <DataTableColumnHeader column={column} title="Distrito" />
     ),
     cell: ({ row }) => (
       <div>
@@ -123,6 +125,8 @@ export const columns: ColumnDef<InvestigationWithDetails>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions data={row.original} />,
+    cell: ({ row }) => (
+      <DataTableRowActions data={row.original} group={group} />
+    ),
   },
 ];

@@ -1,4 +1,5 @@
 import { getInvestigationsById } from "@/actions/investigations/get-investigation-by-id";
+import { getUser } from "@/actions/users/get-me";
 import { InvestigationDocument } from "@/components/ui-custom/investigation-document";
 import { Title } from "@/components/ui-custom/title";
 import {
@@ -9,6 +10,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { validatePermissions } from "@/helpers/validate-permissions";
 import { redirect } from "next/navigation";
 
 const InvestigationPDFId = async ({
@@ -18,6 +20,12 @@ const InvestigationPDFId = async ({
 }) => {
   const { data } = await getInvestigationsById({
     id: Number(params.investigationId),
+  });
+
+  const user = await getUser();
+
+  validatePermissions(user, {
+    requiredRole: "admin",
   });
 
   if (!data) return redirect("/dashboard/admin/investigations");

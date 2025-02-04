@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, createContext, ReactNode, useEffect, use } from "react";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { User } from "@/lib/db/schema";
 import { LoaderComponent } from "@/components/ui-custom/loader";
@@ -31,28 +31,6 @@ const AuthProvider = ({
 
   useEffect(() => {
     setAuth(initialUser);
-
-    // const adminRoutes = ["/dashboard/admin"];
-
-    // Rutas protegidas para admin
-    if (auth?.role !== "admin") {
-      if (pathname.startsWith("/dashboard/groups/uap")) {
-        if (!auth?.modules.includes("uap")) {
-          redirect("/dashboard/not-access");
-        }
-      } else if (pathname.startsWith("/dashboard/investigations/new")) {
-        if (!auth?.modules.includes("uap")) {
-          redirect("/dashboard/not-access");
-        }
-      } else {
-        // if (adminRoutes.some((route) => pathname.startsWith(route))) {
-        //   redirect("/dashboard/not-access");
-        // }
-        if (pathname.startsWith("/dashboard/admin")) {
-          redirect("/dashboard/not-access");
-        }
-      }
-    }
 
     setTimeout(() => {
       setIsLoading(false);

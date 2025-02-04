@@ -2,9 +2,6 @@ import Link from "next/link";
 
 import { getAllInvestigations } from "@/actions/investigations/get-all-investigations";
 
-import { DataTable } from "./_components/data-table";
-import { columns } from "./_components/columns";
-
 import { Title } from "@/components/ui-custom/title";
 import {
   Breadcrumb,
@@ -16,8 +13,17 @@ import {
 } from "@/components/ui/breadcrumb";
 
 import { Button } from "@/components/ui/button";
+import { getUser } from "@/actions/users/get-me";
+import { validatePermissions } from "@/helpers/validate-permissions";
+import { RenderDataTable } from "@/components/ui-custom/data-table-investigations/render-data-table";
 
 export default async function InvestigationsPage() {
+  const user = await getUser();
+
+  validatePermissions(user, {
+    requiredRole: "admin",
+  });
+
   const { data } = await getAllInvestigations();
 
   return (
@@ -37,7 +43,7 @@ export default async function InvestigationsPage() {
         </Breadcrumb>
       </div>
       {data.length > 0 ? (
-        <DataTable data={data} columns={columns} />
+        <RenderDataTable data={data} group="admin" />
       ) : (
         <div className="mt-20 flex flex-col items-center gap-3">
           <p className="text-center text-muted-foreground">

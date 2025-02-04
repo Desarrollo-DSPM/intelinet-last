@@ -20,6 +20,66 @@ export const Sidebar = () => {
   const { auth, isOpenMenu, setIsOpenMenu } = useAuth();
   const pathname = usePathname();
 
+  // Mapa de navegación dinámico
+  const navItems = [
+    {
+      label: "Inicio",
+      href: "/dashboard",
+      icon: House,
+      visible: true, // Siempre visible
+    },
+    {
+      label: "Organigrama",
+      href: "/dashboard/organigrama",
+      icon: GitBranch,
+      visible: true, // Siempre visible
+    },
+    {
+      label: "Usuarios",
+      href: "/dashboard/admin/users",
+      icon: Users,
+      section: "Admin",
+      visible: auth?.role === "admin", // Solo para admin
+    },
+    {
+      label: "Departamentos",
+      href: "/dashboard/admin/departments",
+      icon: Building2,
+      section: "Admin",
+      visible: auth?.role === "admin", // Solo para admin
+    },
+    {
+      label: "Investigaciones",
+      href: "/dashboard/admin/investigations",
+      icon: Folder,
+      section: "Coordinación de inteligencia",
+      visible: auth?.role === "admin", // Solo para admin
+    },
+    {
+      label: "UAP",
+      href: "/dashboard/groups/uap",
+      icon: CircleDot,
+      section: "Grupos especiales",
+      visible: auth?.role === "admin" || auth?.modules.includes("uap"), // Admin o módulo UAP
+    },
+    {
+      label: "CIC",
+      href: "/dashboard/groups/cic",
+      icon: CircleDot,
+      section: "Grupos especiales",
+      visible: auth?.role === "admin" || auth?.modules.includes("cic"), // Admin o módulo CIC
+    },
+  ];
+
+  // Agrupa las secciones para renderizar
+  const groupedNav = navItems.reduce((acc, item) => {
+    if (!item.visible) return acc; // Ignorar items no visibles
+    const section = item.section || "General";
+    acc[section] = acc[section] || [];
+    acc[section].push(item);
+    return acc;
+  }, {} as Record<string, typeof navItems>);
+
   return (
     <>
       <aside
@@ -31,100 +91,29 @@ export const Sidebar = () => {
         <section>
           <Logo className="mb-8 ml-4" />
           <ul>
-            <li>
-              <Link
-                href="/dashboard"
-                className={cn(
-                  "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                  pathname === "/dashboard" && "bg-secondary font-medium"
+            {Object.entries(groupedNav).map(([section, items]) => (
+              <div key={section}>
+                {section !== "General" && (
+                  <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
+                    {section}
+                  </li>
                 )}
-              >
-                <House className="h-4 w-4" />
-                <span>Inicio</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/dashboard/organigrama"
-                className={cn(
-                  "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                  pathname === "/dashboard/organigrama" &&
-                    "bg-secondary font-medium"
-                )}
-              >
-                <GitBranch className="h-4 w-4" />
-                <span>Organigrama</span>
-              </Link>
-            </li>
-            {auth?.role === "admin" && (
-              <>
-                <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
-                  Menu
-                </li>
-                <li>
-                  <Link
-                    href="/dashboard/admin/users"
-                    className={cn(
-                      "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                      pathname.startsWith("/dashboard/admin/users") &&
-                        "bg-secondary font-medium"
-                    )}
-                  >
-                    <Users className="h-4 w-4" />
-                    <span>Usuarios</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/dashboard/admin/departments"
-                    className={cn(
-                      "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                      pathname.startsWith("/dashboard/admin/departments") &&
-                        "bg-secondary font-medium"
-                    )}
-                  >
-                    <Building2 className="h-4 w-4" />
-                    <span>Departamentos</span>
-                  </Link>
-                </li>
-                <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
-                  Coordinación de inteligencia
-                </li>
-                <li>
-                  <Link
-                    href="/dashboard/admin/investigations"
-                    className={cn(
-                      "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                      pathname.startsWith("/dashboard/admin/investigations") &&
-                        "bg-secondary font-medium"
-                    )}
-                  >
-                    <Folder className="h-4 w-4" />
-                    <span>Investigaciones</span>
-                  </Link>
-                </li>
-              </>
-            )}
-            {auth?.role === "admin" || auth?.modules.includes("uap") ? (
-              <>
-                <li className="my-4 text-xs uppercase font-bold text-muted-foreground">
-                  Grupos especiales
-                </li>
-                <li>
-                  <Link
-                    href="/dashboard/groups/uap"
-                    className={cn(
-                      "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                      pathname.startsWith("/dashboard/groups/uap") &&
-                        "bg-secondary font-medium"
-                    )}
-                  >
-                    <CircleDot className="h-4 w-4" />
-                    <span>UAP</span>
-                  </Link>
-                </li>
-              </>
-            ) : null}
+                {items.map(({ label, href, icon: Icon }) => (
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      className={cn(
+                        "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
+                        pathname === href && "bg-secondary font-medium"
+                      )}
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span>{label}</span>
+                    </Link>
+                  </li>
+                ))}
+              </div>
+            ))}
           </ul>
         </section>
       </aside>

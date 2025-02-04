@@ -12,8 +12,16 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { validatePermissions } from "@/helpers/validate-permissions";
+import { getUser } from "@/actions/users/get-me";
 
 const UsersPage = async () => {
+  const user = await getUser();
+
+  validatePermissions(user, {
+    requiredRole: "admin",
+  });
+
   const { data } = await getAllUsers();
 
   return (

@@ -9,7 +9,7 @@ import { DataTableViewOptions } from "./data-table-view-options";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
 import { getAllInvestigationsTypes } from "@/actions/investigations/get-all-investigations-types";
-import { formatInvestigationTypes, statuses } from "../_data/data";
+import { formatInvestigationTypes, statuses } from "./data";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;

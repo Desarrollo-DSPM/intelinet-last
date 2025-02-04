@@ -49,10 +49,26 @@ export const EditModulesUser = ({ data }: EditModulesUserProps) => {
   }, [modules, data.id]);
 
   return (
-    <div>
+    <div className="space-y-3">
       <div className="flex flex-row items-center justify-between rounded-lg border p-4">
         <div className="space-y-0.5">
-          <Label className="text-base">UAP</Label>
+          <Label className="text-base">
+            CIC - Coordinación de investigación criminal
+          </Label>
+          <div>Acceso al módulo de CIC</div>
+        </div>
+        <div>
+          <Switch
+            checked={modules.includes("cic") ? true : false}
+            onCheckedChange={() => handleModuleChange("cic")}
+          />
+        </div>
+      </div>
+      <div className="flex flex-row items-center justify-between rounded-lg border p-4">
+        <div className="space-y-0.5">
+          <Label className="text-base">
+            UAP - Unidad de atención a pandillas
+          </Label>
           <div>Acceso al módulo de UAP</div>
         </div>
         <div>

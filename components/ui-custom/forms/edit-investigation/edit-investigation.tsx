@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -178,6 +178,13 @@ export const EditInvestigationForm = ({
 
   const router = useRouter();
   const { auth } = useAuth();
+
+  useEffect(() => {
+    // Validamos que el usuario sea el creador de la investigación o un admin
+    if (auth?.id !== investigation.createdBy.id && auth?.role !== "admin") {
+      redirect("/dashboard/not-access");
+    }
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -453,6 +460,7 @@ export const EditInvestigationForm = ({
     }
 
     const res = await editInvestigation({
+      createdById: investigation.createdBy.id,
       id: investigation.investigation.id,
       values: valuesForm,
     });
@@ -471,7 +479,7 @@ export const EditInvestigationForm = ({
     setIsMounted(true);
   }, []);
 
-  if (!isMounted) {
+  if (!isMounted || !auth) {
     return null;
   }
 

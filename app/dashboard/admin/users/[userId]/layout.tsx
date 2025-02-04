@@ -12,6 +12,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { getUser } from "@/actions/users/get-me";
+import { validatePermissions } from "@/helpers/validate-permissions";
 
 const UserDetailsLayout = async ({
   children,
@@ -20,6 +22,12 @@ const UserDetailsLayout = async ({
   children: ReactNode;
   params: { userId: string };
 }) => {
+  const user = await getUser();
+
+  validatePermissions(user, {
+    requiredRole: "admin",
+  });
+
   const { data } = await getUserById(Number(params.userId));
 
   if (!data) return null;

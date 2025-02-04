@@ -10,8 +10,16 @@ import {
 } from "@/components/ui/breadcrumb";
 import { DataTable } from "./_components/data-table";
 import { columns } from "./_components/columns";
+import { getUser } from "@/actions/users/get-me";
+import { validatePermissions } from "@/helpers/validate-permissions";
 
 const DepartmentsPage = async () => {
+  const user = await getUser();
+
+  validatePermissions(user, {
+    requiredRole: "admin",
+  });
+
   const { data } = await getAllDepartments();
 
   return (

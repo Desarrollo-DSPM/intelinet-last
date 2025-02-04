@@ -16,13 +16,13 @@ import { Button } from "@/components/ui/button";
 import { RenderDataTable } from "@/components/ui-custom/data-table-investigations/render-data-table";
 
 export default async function InvestigationsPage() {
-  const group = "uap";
+  const group = "cic";
   const { data } = await getInvestigationsByGroup({ group });
 
   return (
     <div>
       <div className="flex flex-col md:flex-row items-center justify-between gap-5 mb-10">
-        <Title>Investigaciones UAP</Title>
+        <Title>Investigaciones CIC</Title>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -30,7 +30,7 @@ export default async function InvestigationsPage() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Investigaciones UAP</BreadcrumbPage>
+              <BreadcrumbPage>Investigaciones CIC</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -43,7 +43,7 @@ export default async function InvestigationsPage() {
             No hay investigaciones
           </p>
           <Button asChild>
-            <Link href="/dashboard/investigations/new?group=uap">
+            <Link href="/dashboard/investigations/new?group=cic">
               Nueva investigación
             </Link>
           </Button>

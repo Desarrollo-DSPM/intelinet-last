@@ -1,5 +1,5 @@
 import { getInvestigationsById } from "@/actions/investigations/get-investigation-by-id";
-import { EditInvestigationForm } from "@/components/ui-custom/forms/edit-investigation";
+import { EditInvestigationForm } from "@/components/ui-custom/forms/edit-investigation/edit-investigation";
 import { Title } from "@/components/ui-custom/title";
 import {
   Breadcrumb,

@@ -28,12 +28,14 @@ import { InvestigationDocument } from "@/components/ui-custom/investigation-docu
 import { copyToClipboard } from "@/helpers/copy-clipboard";
 import { ModalSharedInvestigation } from "@/components/ui-custom/modals/shared-investigation-modal";
 import { ModalUpdateStatusInvestigation } from "@/components/ui-custom/modals/update-status-investigation-modal";
+import { useAuth } from "@/hooks/use-auth";
 
 interface DataTableRowActionsProps {
   data: InvestigationWithDetails;
+  group: string;
 }
 
-export function DataTableRowActions({ data }: DataTableRowActionsProps) {
+export function DataTableRowActions({ data, group }: DataTableRowActionsProps) {
   const [openModalSharedInvestigation, setOpenModalSharedInvestigation] =
     useState(false);
   const [openModalCompleteInvestigation, setOpenModalCompleteInvestigation] =
@@ -44,8 +46,10 @@ export function DataTableRowActions({ data }: DataTableRowActionsProps) {
 
   const reactToPrintFn = useReactToPrint({
     contentRef,
-    documentTitle: "Investigación UAP",
+    documentTitle: `Investigación ${group}`,
   });
+
+  const { auth } = useAuth();
 
   return (
     <>
@@ -60,21 +64,23 @@ export function DataTableRowActions({ data }: DataTableRowActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[160px]">
-          {data.investigation.status !== "done" &&
-          data.investigation.status !== "cancelled" ? (
-            <DropdownMenuItem asChild>
-              <Link
-                href={`/dashboard/groups/uap/investigations/${data.investigation.id}`}
-                className="items-center"
-              >
-                <Pencil className="w-4 h-4 mr-4" />
-                Editar
-              </Link>
-            </DropdownMenuItem>
+          {auth?.id === data.createdBy.id || auth?.role === "admin" ? (
+            data.investigation.status !== "done" &&
+            data.investigation.status !== "cancelled" ? (
+              <DropdownMenuItem asChild>
+                <Link
+                  href={`/dashboard/investigations/${data.investigation.id}`}
+                  className="items-center"
+                >
+                  <Pencil className="w-4 h-4 mr-4" />
+                  Editar
+                </Link>
+              </DropdownMenuItem>
+            ) : null
           ) : null}
           <DropdownMenuItem asChild>
             <Link
-              href={`/dashboard/groups/uap/investigations/preview/${data.investigation.id}`}
+              href={`/dashboard/investigations/${data.investigation.id}/preview`}
               className="items-center"
             >
               <Eye className="w-4 h-4 mr-4" />
@@ -90,50 +96,54 @@ export function DataTableRowActions({ data }: DataTableRowActionsProps) {
               Imprimir
             </DropdownMenuItem>
           )}
-          {data.investigation.status !== "cancelled" &&
-            (data.investigation.shared === 0 ? (
-              <DropdownMenuItem
-                className="flex items-center"
-                onClick={() => setOpenModalSharedInvestigation(true)}
-              >
-                <Share2 className="size-4 mr-4" />
-                Compartir
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem
-                onClick={() =>
-                  copyToClipboard(
-                    `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/investigations/${data.investigation.id}/shared`
-                  )
-                }
-              >
-                <span className="flex items-center">
-                  <Copy className="size-4 mr-4" />
-                  Copiar URL
-                </span>
-              </DropdownMenuItem>
-            ))}
-          {data.investigation.status !== "done" &&
-          data.investigation.status !== "cancelled" ? (
-            <>
-              <DropdownMenuItem
-                onClick={() => setOpenModalCompleteInvestigation(true)}
-              >
-                <span className="flex items-center">
-                  <CircleCheckBig className="size-4 mr-4" />
-                  Completar
-                </span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => setOpenModalCancelledInvestigation(true)}
-              >
-                <span className="flex items-center">
-                  <Ban className="size-4 mr-4" />
-                  Cancelar
-                </span>
-              </DropdownMenuItem>
-            </>
+          {auth?.id === data.createdBy.id || auth?.role === "admin"
+            ? data.investigation.status !== "cancelled" &&
+              (data.investigation.shared === 0 ? (
+                <DropdownMenuItem
+                  className="flex items-center"
+                  onClick={() => setOpenModalSharedInvestigation(true)}
+                >
+                  <Share2 className="size-4 mr-4" />
+                  Compartir
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  onClick={() =>
+                    copyToClipboard(
+                      `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/investigations/${data.investigation.id}/shared`
+                    )
+                  }
+                >
+                  <span className="flex items-center">
+                    <Copy className="size-4 mr-4" />
+                    Copiar URL
+                  </span>
+                </DropdownMenuItem>
+              ))
+            : null}
+          {auth?.id === data.createdBy.id || auth?.role === "admin" ? (
+            data.investigation.status !== "done" &&
+            data.investigation.status !== "cancelled" ? (
+              <>
+                <DropdownMenuItem
+                  onClick={() => setOpenModalCompleteInvestigation(true)}
+                >
+                  <span className="flex items-center">
+                    <CircleCheckBig className="size-4 mr-4" />
+                    Completar
+                  </span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => setOpenModalCancelledInvestigation(true)}
+                >
+                  <span className="flex items-center">
+                    <Ban className="size-4 mr-4" />
+                    Cancelar
+                  </span>
+                </DropdownMenuItem>
+              </>
+            ) : null
           ) : null}
         </DropdownMenuContent>
       </DropdownMenu>
