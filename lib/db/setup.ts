@@ -1,4 +1,4 @@
-import { promises as fs } from "node:fs";
+import {promises as fs} from "node:fs";
 import readline from "node:readline";
 import crypto from "node:crypto";
 import path from "node:path";
@@ -6,7 +6,7 @@ import path from "node:path";
 function question(query: string, hideInput = false): Promise<string> {
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout,
+    output: process.stdout
   });
 
   if (hideInput) {
@@ -14,13 +14,13 @@ function question(query: string, hideInput = false): Promise<string> {
     process.stdout.write(query);
     process.stdin.on("keypress", () => {
       readline.moveCursor(
-        (rl as readline.Interface & { output: NodeJS.WritableStream }).output,
+        (rl as readline.Interface & {output: NodeJS.WritableStream}).output,
         -1,
         0
       );
-      (
-        rl as readline.Interface & { output: NodeJS.WritableStream }
-      ).output.write("*");
+      (rl as readline.Interface & {output: NodeJS.WritableStream}).output.write(
+        "*"
+      );
     });
   }
 
@@ -95,7 +95,7 @@ async function main() {
     DB_PASSWORD,
     DB_PORT,
     BASE_URL,
-    AUTH_SECRET,
+    NEXT_PUBLIC_AUTH_SECRET: AUTH_SECRET
   });
 
   console.log("✅ Configuración completada!");
