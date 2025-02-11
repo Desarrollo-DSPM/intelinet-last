@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { FormLogin } from "./_components/form-login";
+import {FormLogin} from "./_components/form-login";
 
 const LoginPage = () => {
   return (
@@ -9,14 +8,6 @@ const LoginPage = () => {
       </h1>
       <div className="w-full">
         <FormLogin />
-      </div>
-      <div className="mt-5">
-        <p className="text-center text-muted-foreground">
-          ¿No tienes una cuenta?{" "}
-          <Link href="/auth/register" className="font-medium underline">
-            Registrate
-          </Link>
-        </p>
       </div>
     </div>
   );

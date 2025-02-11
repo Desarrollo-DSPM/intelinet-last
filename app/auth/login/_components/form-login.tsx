@@ -1,53 +1,49 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import {useTransition} from "react";
+import {useRouter} from "next/navigation";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { toast } from "sonner";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {useForm} from "react-hook-form";
+import {z} from "zod";
+import {toast} from "sonner";
 
-import { signIn } from "@/actions/users/login";
-import { formSchemaLogin } from "@/types/user";
+import {signIn} from "@/actions/users/login";
+import {formSchemaLogin} from "@/types/user";
 
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Loader } from "lucide-react";
+import {Input} from "@/components/ui/input";
+import {Loader} from "lucide-react";
 
 export const FormLogin = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isPending, startTransition] = useTransition();
 
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchemaLogin>>({
     resolver: zodResolver(formSchemaLogin),
     defaultValues: {
-      email: "",
-      password: "",
-    },
+      employeeNumber: 0,
+      password: ""
+    }
   });
 
   async function onSubmit(values: z.infer<typeof formSchemaLogin>) {
-    setIsLoading(true);
-    const res = await signIn(values);
-
-    if (res?.response === "success") {
-      router.push("/dashboard");
-    } else {
-      toast.error(res?.message);
-    }
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+    startTransition(async () => {
+      const res = await signIn(values);
+      if (res?.response === "success") {
+        router.push("/dashboard");
+      } else {
+        toast.error(res?.message);
+      }
+    });
   }
 
   return (
@@ -55,15 +51,15 @@ export const FormLogin = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
         <FormField
           control={form.control}
-          name="email"
-          render={({ field }) => (
+          name="employeeNumber"
+          render={({field}) => (
             <FormItem>
-              <FormLabel>Correo electrónico</FormLabel>
+              <FormLabel>Número de empleado</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="test@test.com"
-                  type="email"
-                  disabled={isLoading}
+                  placeholder="123456789"
+                  type="number"
+                  disabled={isPending}
                   {...field}
                 />
               </FormControl>
@@ -74,14 +70,14 @@ export const FormLogin = () => {
         <FormField
           control={form.control}
           name="password"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Contraseña</FormLabel>
               <FormControl>
                 <Input
                   placeholder="*********"
                   type="password"
-                  disabled={isLoading}
+                  disabled={isPending}
                   {...field}
                 />
               </FormControl>
@@ -89,8 +85,8 @@ export const FormLogin = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading && <Loader className="w-4 h-4 mr-3 animate-spin" />}
+        <Button type="submit" className="w-full" disabled={isPending}>
+          {isPending && <Loader className="w-4 h-4 mr-3 animate-spin" />}
           Ingresar
         </Button>
       </form>
