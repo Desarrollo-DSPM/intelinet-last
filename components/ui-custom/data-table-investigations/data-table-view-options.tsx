@@ -1,26 +1,28 @@
 "use client";
 
-import { Table } from "@tanstack/react-table";
+import {Table} from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { MixerHorizontalIcon } from "@radix-ui/react-icons";
-import { CirclePlus } from "lucide-react";
+import {MixerHorizontalIcon} from "@radix-ui/react-icons";
+import {CirclePlus} from "lucide-react";
 import Link from "next/link";
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
+  group: string;
 }
 
 export function DataTableViewOptions<TData>({
   table,
+  group
 }: DataTableViewOptionsProps<TData>) {
   return (
     <div className="flex items-center gap-2">
@@ -70,7 +72,7 @@ export function DataTableViewOptions<TData>({
       </DropdownMenu>
       <Button asChild>
         <Link
-          href="/dashboard/investigations/new?group=uap"
+          href={`/dashboard/investigations/new?group=${group}`}
           className="flex items-center gap-2"
         >
           <CirclePlus className="w-4 h-4 mr-2" />

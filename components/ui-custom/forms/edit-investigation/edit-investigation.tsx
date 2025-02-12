@@ -1,40 +1,31 @@
 "use client";
 
-import { redirect, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { format, parse } from "date-fns";
-import { es } from "date-fns/locale";
+import {redirect, useRouter} from "next/navigation";
+import {useEffect, useState} from "react";
+import {useForm} from "react-hook-form";
+import {toast} from "sonner";
+import {z} from "zod";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {format, parse} from "date-fns";
+import {es} from "date-fns/locale";
 
-import { getAllInvestigationsTypes } from "@/actions/investigations/get-all-investigations-types";
-import { editInvestigation } from "@/actions/investigations/edit-investigation";
-import { getAllUsers } from "@/actions/users/get-users";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import {getAllInvestigationsTypes} from "@/actions/investigations/get-all-investigations-types";
+import {editInvestigation} from "@/actions/investigations/edit-investigation";
+import {getAllUsers} from "@/actions/users/get-users";
+import {Button} from "@/components/ui/button";
+import {Calendar} from "@/components/ui/calendar";
+import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -42,21 +33,21 @@ import {
   SelectItem,
   SelectLabel,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/components/ui/select";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
+  TooltipTrigger
 } from "@/components/ui/tooltip";
-import { useAuth } from "@/hooks/use-auth";
+import {useAuth} from "@/hooks/use-auth";
 import {
   InvestigationType,
   InvestigationWithDetails,
-  UserWithDepartment,
+  UserWithDepartment
 } from "@/lib/db/schema";
-import { cn } from "@/lib/utils";
+import {cn} from "@/lib/utils";
 import {
   formSchemaEditInvestigation,
   Object,
@@ -65,11 +56,11 @@ import {
   RecoveredObject,
   SecuredDrug,
   SocialNetwork,
-  Vehicle,
+  Vehicle
 } from "@/types/investigation";
-import { ArrowDownToLine, CalendarIcon, Loader, Trash2, X } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
+import {ArrowDownToLine, CalendarIcon, Loader, Trash2, X} from "lucide-react";
+import {Separator} from "@/components/ui/separator";
+import {Badge} from "@/components/ui/badge";
 import Image from "next/image";
 import {
   Table,
@@ -77,17 +68,17 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
-import { formatText } from "@/helpers/format-text";
+import {Textarea} from "@/components/ui/textarea";
+import {formatText} from "@/helpers/format-text";
 
 interface EditInvestigationFormProps {
   investigation: InvestigationWithDetails;
 }
 
 export const EditInvestigationForm = ({
-  investigation,
+  investigation
 }: EditInvestigationFormProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -114,7 +105,7 @@ export const EditInvestigationForm = ({
     name: "",
     address: "",
     plate: "",
-    phone: "",
+    phone: ""
   });
   const [socialNetworks, setSocialNetworks] = useState<SocialNetwork[]>(() => {
     const social = investigation.investigation.socialNetworks;
@@ -122,7 +113,7 @@ export const EditInvestigationForm = ({
   });
   const [socialNetwork, setSocialNetwork] = useState<SocialNetwork>({
     name: "",
-    url: "",
+    url: ""
   });
   const [personsArrested, setPersonsArrested] = useState<PersonArrested[]>(
     () => {
@@ -133,7 +124,7 @@ export const EditInvestigationForm = ({
   const [personArrested, setPersonArrested] = useState<PersonArrested>({
     name: "",
     pandilla: "",
-    criminalGroup: "",
+    criminalGroup: ""
   });
   const [recoveredObjects, setRecoveredObjects] = useState<RecoveredObject[]>(
     () => {
@@ -144,7 +135,7 @@ export const EditInvestigationForm = ({
   const [recoveredObject, setRecoveredObject] = useState<RecoveredObject>({
     typeRecovered: "",
     typeWeapon: "",
-    quantity: 0,
+    quantity: 0
   });
   const [securedDrugs, setSecuredDrugs] = useState<SecuredDrug[]>(() => {
     const drug = investigation.investigation.securedDrug;
@@ -153,7 +144,7 @@ export const EditInvestigationForm = ({
   const [securedDrug, setSecuredDrug] = useState<SecuredDrug>({
     type: "",
     unit: "",
-    quantity: 0,
+    quantity: 0
   });
   const [securedVehicles, setSecuredVehicles] = useState<Vehicle[]>(() => {
     const vehicle = investigation.investigation.securedVehicles;
@@ -165,7 +156,7 @@ export const EditInvestigationForm = ({
     type: "",
     color: "",
     plate: "",
-    caracteristics: "",
+    caracteristics: ""
   });
   const [securedObjects, setSecuredObjects] = useState<Object[]>(() => {
     const object = investigation.investigation.securedObjects;
@@ -173,18 +164,18 @@ export const EditInvestigationForm = ({
   });
   const [securedObject, setSecuredObject] = useState<Object>({
     type: "",
-    description: "",
+    description: ""
   });
 
   const router = useRouter();
-  const { auth } = useAuth();
+  const {auth} = useAuth();
 
   useEffect(() => {
     // Validamos que el usuario sea el creador de la investigación o un admin
     if (auth?.id !== investigation.createdBy.id && auth?.role !== "admin") {
       redirect("/dashboard/not-access");
     }
-  }, []);
+  }, [auth?.id, auth?.role, investigation.createdBy.id]);
 
   useEffect(() => {
     (async () => {
@@ -232,7 +223,7 @@ export const EditInvestigationForm = ({
       name: "",
       address: "",
       plate: "",
-      phone: "",
+      phone: ""
     });
   };
 
@@ -249,7 +240,7 @@ export const EditInvestigationForm = ({
     setSocialNetworks([data, ...socialNetworks]);
     setSocialNetwork({
       name: "",
-      url: "",
+      url: ""
     });
   };
 
@@ -267,7 +258,7 @@ export const EditInvestigationForm = ({
     setPersonArrested({
       name: "",
       pandilla: "",
-      criminalGroup: "",
+      criminalGroup: ""
     });
   };
 
@@ -285,7 +276,7 @@ export const EditInvestigationForm = ({
     setRecoveredObject({
       typeRecovered: "",
       typeWeapon: "",
-      quantity: 0,
+      quantity: 0
     });
   };
 
@@ -303,7 +294,7 @@ export const EditInvestigationForm = ({
     setSecuredDrug({
       type: "",
       unit: "",
-      quantity: 0,
+      quantity: 0
     });
   };
 
@@ -330,7 +321,7 @@ export const EditInvestigationForm = ({
       type: "",
       color: "",
       plate: "",
-      caracteristics: "",
+      caracteristics: ""
     });
   };
 
@@ -347,7 +338,7 @@ export const EditInvestigationForm = ({
     setSecuredObjects([data, ...securedObjects]);
     setSecuredObject({
       type: "",
-      description: "",
+      description: ""
     });
   };
 
@@ -432,8 +423,8 @@ export const EditInvestigationForm = ({
             new Date()
           )
         : undefined,
-      deliveryHour: investigation.investigation.deliveryHour ?? "",
-    },
+      deliveryHour: investigation.investigation.deliveryHour ?? ""
+    }
   });
 
   async function onSubmit(values: z.infer<typeof formSchemaEditInvestigation>) {
@@ -450,7 +441,7 @@ export const EditInvestigationForm = ({
       recoveredObjects: JSON.stringify(recoveredObjects),
       securedDrug: JSON.stringify(securedDrugs),
       securedVehicles: JSON.stringify(securedVehicles),
-      securedObjects: JSON.stringify(securedObjects),
+      securedObjects: JSON.stringify(securedObjects)
     };
 
     if (!auth?.id) {
@@ -462,7 +453,7 @@ export const EditInvestigationForm = ({
     const res = await editInvestigation({
       createdById: investigation.createdBy.id,
       id: investigation.investigation.id,
-      values: valuesForm,
+      values: valuesForm
     });
 
     if (res?.response === "success") {
@@ -492,7 +483,7 @@ export const EditInvestigationForm = ({
         <FormField
           control={form.control}
           name="supportUserId"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Nombre del Elemento que Brindó Apoyo</FormLabel>
               <Select
@@ -520,7 +511,7 @@ export const EditInvestigationForm = ({
         <FormField
           control={form.control}
           name="district"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Distrito</FormLabel>
               <Select
@@ -549,7 +540,7 @@ export const EditInvestigationForm = ({
         <FormField
           control={form.control}
           name="investigationTypeId"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Tipo de investigación</FormLabel>
               <Select
@@ -583,7 +574,7 @@ export const EditInvestigationForm = ({
         <FormField
           control={form.control}
           name="investigationDate"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem className="flex flex-col">
               <FormLabel>Fecha</FormLabel>
               <Popover>
@@ -601,7 +592,7 @@ export const EditInvestigationForm = ({
                           ? field.value
                           : parse(field.value, "dd/MM/yyyy", new Date()),
                         "dd MMM, yyyy",
-                        { locale: es }
+                        {locale: es}
                       )}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
@@ -627,7 +618,7 @@ export const EditInvestigationForm = ({
         <FormField
           control={form.control}
           name="location"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Ubicación</FormLabel>
               <FormControl>
@@ -644,7 +635,7 @@ export const EditInvestigationForm = ({
         <FormField
           control={form.control}
           name="physicalVictim"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Víctima Física</FormLabel>
               <FormControl>
@@ -661,7 +652,7 @@ export const EditInvestigationForm = ({
         <FormField
           control={form.control}
           name="moralVictim"
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Víctima Moral</FormLabel>
               <FormControl>
@@ -777,7 +768,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="victimInv"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Investigación víctimas</FormLabel>
                 <FormControl>
@@ -795,7 +786,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="witnessInv"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Investigación testigos</FormLabel>
                 <FormControl>
@@ -813,7 +804,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="invAccused"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Investigación imputados</FormLabel>
                 <FormControl>
@@ -831,7 +822,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="photoCount"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Serie fotográfica del lugar de los hechos</FormLabel>
                 <FormControl>
@@ -849,7 +840,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="videoCount"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Vídeo grabaciones</FormLabel>
                 <FormControl>
@@ -876,7 +867,7 @@ export const EditInvestigationForm = ({
               id="peopleName"
               value={peopleObject.name}
               onChange={(e) =>
-                setPeopleObject({ ...peopleObject, name: e.target.value })
+                setPeopleObject({...peopleObject, name: e.target.value})
               }
             />
           </div>
@@ -887,7 +878,7 @@ export const EditInvestigationForm = ({
               id="peopleAddress"
               value={peopleObject.address}
               onChange={(e) =>
-                setPeopleObject({ ...peopleObject, address: e.target.value })
+                setPeopleObject({...peopleObject, address: e.target.value})
               }
             />
           </div>
@@ -898,7 +889,7 @@ export const EditInvestigationForm = ({
               id="peoplePlate"
               value={peopleObject.plate}
               onChange={(e) =>
-                setPeopleObject({ ...peopleObject, plate: e.target.value })
+                setPeopleObject({...peopleObject, plate: e.target.value})
               }
             />
           </div>
@@ -909,7 +900,7 @@ export const EditInvestigationForm = ({
               id="peoplePhone"
               value={peopleObject.phone}
               onChange={(e) =>
-                setPeopleObject({ ...peopleObject, phone: e.target.value })
+                setPeopleObject({...peopleObject, phone: e.target.value})
               }
             />
           </div>
@@ -978,7 +969,7 @@ export const EditInvestigationForm = ({
             <FormField
               control={form.control}
               name="census"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormLabel>Censos</FormLabel>
                   <FormControl>
@@ -998,7 +989,7 @@ export const EditInvestigationForm = ({
             <FormField
               control={form.control}
               name="afis"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormLabel>Afis</FormLabel>
                   <FormControl>
@@ -1018,7 +1009,7 @@ export const EditInvestigationForm = ({
             <FormField
               control={form.control}
               name="atecedentsAOP"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormLabel>Antecedentes AOP</FormLabel>
                   <FormControl>
@@ -1044,7 +1035,7 @@ export const EditInvestigationForm = ({
             <Select
               value={socialNetwork.name}
               onValueChange={(value) =>
-                setSocialNetwork({ ...socialNetwork, name: value })
+                setSocialNetwork({...socialNetwork, name: value})
               }
             >
               <SelectTrigger>
@@ -1067,7 +1058,7 @@ export const EditInvestigationForm = ({
               placeholder="https://www.facebook.com/username"
               value={socialNetwork.url}
               onChange={(e) =>
-                setSocialNetwork({ ...socialNetwork, url: e.target.value })
+                setSocialNetwork({...socialNetwork, url: e.target.value})
               }
             />
           </div>
@@ -1125,7 +1116,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="peopleFiles"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Fichas de personas</FormLabel>
                 <FormControl>
@@ -1143,7 +1134,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="comparision"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Comparativa</FormLabel>
                 <FormControl>
@@ -1161,7 +1152,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="chronologyUAT"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Cronología U.A.T.</FormLabel>
                 <FormControl>
@@ -1184,7 +1175,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="surveillanceOperationPeople"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Cantidad de personas</FormLabel>
                 <FormControl>
@@ -1202,7 +1193,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="surveillanceOperationVehicles"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Cantidad de vehículos</FormLabel>
                 <FormControl>
@@ -1220,7 +1211,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="surveillanceOperationAdressess"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Cantidad de direcciones</FormLabel>
                 <FormControl>
@@ -1243,7 +1234,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="searchOperationTracking"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Rastreos (cantidad)</FormLabel>
                 <FormControl>
@@ -1261,7 +1252,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="searchOperationOthers"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Otros (cantidad)</FormLabel>
                 <FormControl>
@@ -1281,7 +1272,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="pliceReport"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Reporte policial (cantidad)</FormLabel>
                 <FormControl>
@@ -1299,7 +1290,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="photographicSeries"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Serie fotográfica (cantidad)</FormLabel>
                 <FormControl>
@@ -1317,7 +1308,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="mapUAT"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Mapa de U.A.T. (cantidad)</FormLabel>
                 <FormControl>
@@ -1342,7 +1333,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="arrestOperationLocation"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Ubicación</FormLabel>
                 <FormControl>
@@ -1359,7 +1350,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="arrestOperationDistrict"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Distrito</FormLabel>
                 <Select
@@ -1388,7 +1379,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="arrestOperationDate"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Fecha</FormLabel>
                 <Popover>
@@ -1407,7 +1398,7 @@ export const EditInvestigationForm = ({
                                 ? field.value
                                 : parse(field.value, "dd/MM/yyyy", new Date()),
                               "dd MMM, yyyy",
-                              { locale: es }
+                              {locale: es}
                             )
                           : ""}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
@@ -1444,7 +1435,7 @@ export const EditInvestigationForm = ({
               placeholder="Pancho Barraza"
               value={personArrested.name}
               onChange={(e) =>
-                setPersonArrested({ ...personArrested, name: e.target.value })
+                setPersonArrested({...personArrested, name: e.target.value})
               }
             />
           </div>
@@ -1458,7 +1449,7 @@ export const EditInvestigationForm = ({
               onChange={(e) =>
                 setPersonArrested({
                   ...personArrested,
-                  pandilla: e.target.value,
+                  pandilla: e.target.value
                 })
               }
             />
@@ -1473,7 +1464,7 @@ export const EditInvestigationForm = ({
               onChange={(e) =>
                 setPersonArrested({
                   ...personArrested,
-                  criminalGroup: e.target.value,
+                  criminalGroup: e.target.value
                 })
               }
             />
@@ -1546,7 +1537,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="arrestsInFlagranteDelicto"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Por flagrancia</FormLabel>
                 <FormControl>
@@ -1564,7 +1555,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="arrestsForAdministrative"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Por administrativo</FormLabel>
                 <FormControl>
@@ -1582,7 +1573,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="arrestsForTracking"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Por seguimiento de la investigación</FormLabel>
                 <FormControl>
@@ -1600,7 +1591,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="arrestsByArrestWarrant"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Por orden de aprehensión</FormLabel>
                 <FormControl>
@@ -1618,7 +1609,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="arrestsBySearchWarrant"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Por orden de cateo</FormLabel>
                 <FormControl>
@@ -1641,7 +1632,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="personsLocatedUNNA"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Canalizaciones a UNNA</FormLabel>
                 <FormControl>
@@ -1659,7 +1650,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="personsLocatedSocialWork"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Canalizaciones a trabajo social</FormLabel>
                 <FormControl>
@@ -1684,7 +1675,7 @@ export const EditInvestigationForm = ({
             <Select
               value={recoveredObject.typeRecovered}
               onValueChange={(value) =>
-                setRecoveredObject({ ...recoveredObject, typeRecovered: value })
+                setRecoveredObject({...recoveredObject, typeRecovered: value})
               }
             >
               <SelectTrigger>
@@ -1703,7 +1694,7 @@ export const EditInvestigationForm = ({
             <Select
               value={recoveredObject.typeWeapon}
               onValueChange={(value) =>
-                setRecoveredObject({ ...recoveredObject, typeWeapon: value })
+                setRecoveredObject({...recoveredObject, typeWeapon: value})
               }
             >
               <SelectTrigger>
@@ -1729,7 +1720,7 @@ export const EditInvestigationForm = ({
               onChange={(e) =>
                 setRecoveredObject({
                   ...recoveredObject,
-                  quantity: Number(e.target.value),
+                  quantity: Number(e.target.value)
                 })
               }
             />
@@ -1844,7 +1835,7 @@ export const EditInvestigationForm = ({
             <Select
               value={securedDrug.type}
               onValueChange={(value) =>
-                setSecuredDrug({ ...securedDrug, type: value })
+                setSecuredDrug({...securedDrug, type: value})
               }
             >
               <SelectTrigger>
@@ -1864,7 +1855,7 @@ export const EditInvestigationForm = ({
             <Select
               value={securedDrug.unit}
               onValueChange={(value) =>
-                setSecuredDrug({ ...securedDrug, unit: value })
+                setSecuredDrug({...securedDrug, unit: value})
               }
             >
               <SelectTrigger>
@@ -1887,7 +1878,7 @@ export const EditInvestigationForm = ({
               onChange={(e) =>
                 setSecuredDrug({
                   ...securedDrug,
-                  quantity: Number(e.target.value),
+                  quantity: Number(e.target.value)
                 })
               }
             />
@@ -1988,7 +1979,7 @@ export const EditInvestigationForm = ({
             <Select
               value={securedVehicle.brand}
               onValueChange={(value) =>
-                setSecuredVehicle({ ...securedVehicle, brand: value })
+                setSecuredVehicle({...securedVehicle, brand: value})
               }
             >
               <SelectTrigger>
@@ -2025,7 +2016,7 @@ export const EditInvestigationForm = ({
             <Select
               value={securedVehicle.type}
               onValueChange={(value) =>
-                setSecuredVehicle({ ...securedVehicle, type: value })
+                setSecuredVehicle({...securedVehicle, type: value})
               }
             >
               <SelectTrigger>
@@ -2120,7 +2111,7 @@ export const EditInvestigationForm = ({
             <Select
               value={securedVehicle.model}
               onValueChange={(value) =>
-                setSecuredVehicle({ ...securedVehicle, model: value })
+                setSecuredVehicle({...securedVehicle, model: value})
               }
             >
               <SelectTrigger>
@@ -2191,7 +2182,7 @@ export const EditInvestigationForm = ({
             <Select
               value={securedVehicle.color}
               onValueChange={(value) =>
-                setSecuredVehicle({ ...securedVehicle, color: value })
+                setSecuredVehicle({...securedVehicle, color: value})
               }
             >
               <SelectTrigger>
@@ -2224,7 +2215,7 @@ export const EditInvestigationForm = ({
               onChange={(e) =>
                 setSecuredVehicle({
                   ...securedVehicle,
-                  plate: e.target.value.toUpperCase(),
+                  plate: e.target.value.toUpperCase()
                 })
               }
             />
@@ -2239,7 +2230,7 @@ export const EditInvestigationForm = ({
               onChange={(e) =>
                 setSecuredVehicle({
                   ...securedVehicle,
-                  caracteristics: e.target.value,
+                  caracteristics: e.target.value
                 })
               }
             />
@@ -2353,7 +2344,7 @@ export const EditInvestigationForm = ({
             <Select
               value={securedObject.type}
               onValueChange={(value) =>
-                setSecuredObject({ ...securedObject, type: value })
+                setSecuredObject({...securedObject, type: value})
               }
             >
               <SelectTrigger>
@@ -2378,7 +2369,7 @@ export const EditInvestigationForm = ({
               onChange={(e) =>
                 setSecuredObject({
                   ...securedObject,
-                  description: e.target.value,
+                  description: e.target.value
                 })
               }
             />
@@ -2489,7 +2480,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="informativeSheet"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Fichas informativas (cantidad)</FormLabel>
                 <FormControl>
@@ -2507,7 +2498,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="officesMP"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Oficios M.P. (cantidad)</FormLabel>
                 <FormControl>
@@ -2527,7 +2518,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="deliveryDate"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Fecha de entrega</FormLabel>
                 <Popover>
@@ -2546,7 +2537,7 @@ export const EditInvestigationForm = ({
                                 ? field.value
                                 : parse(field.value, "dd/MM/yyyy", new Date()),
                               "dd MMM, yyyy",
-                              { locale: es }
+                              {locale: es}
                             )
                           : ""}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
@@ -2573,7 +2564,7 @@ export const EditInvestigationForm = ({
           <FormField
             control={form.control}
             name="deliveryHour"
-            render={({ field }) => (
+            render={({field}) => (
               <FormItem>
                 <FormLabel>Hora de entrega</FormLabel>
                 <Select

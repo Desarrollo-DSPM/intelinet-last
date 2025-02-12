@@ -1,56 +1,60 @@
-import { getInvestigationsByGroup } from "@/actions/investigations/get-investigations-by-group";
-import { getInvestigationsByGroupAndByStatus } from "@/actions/investigations/get-investigations-by-group-and-by-status";
-import { RadialChart } from "@/components/ui-custom/charts/radial-chart";
+import {getInvestigationsByGroup} from "@/actions/investigations/get-investigations-by-group";
+import {getInvestigationsByGroupAndByStatus} from "@/actions/investigations/get-investigations-by-group-and-by-status";
+import {RadialChart} from "@/components/ui-custom/charts/radial-chart";
 
-import { Title } from "@/components/ui-custom/title";
+import {Title} from "@/components/ui-custom/title";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator,
+  BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
 
-const DashboardCICPage = async () => {
-  const group = "cic";
+const DashboardGroupPage = async ({
+  params
+}: {
+  params: Promise<{group: string}>;
+}) => {
+  const {group} = await params;
 
-  const totalInvestigations = await getInvestigationsByGroup({ group });
+  const totalInvestigations = await getInvestigationsByGroup({group});
   const investigationsInProgressResponse =
     await getInvestigationsByGroupAndByStatus({
       group,
-      status: "in-progress",
+      status: "in-progress"
     });
   const investigationsCancelledResponse =
     await getInvestigationsByGroupAndByStatus({
       group,
-      status: "cancelled",
+      status: "cancelled"
     });
   const investigationsCompletedResponse =
     await getInvestigationsByGroupAndByStatus({
       group,
-      status: "done",
+      status: "done"
     });
 
   const chartConfig = {
     inProgress: {
       label: "En progreso",
-      color: "hsl(210, 100%, 50%)", // Azul
+      color: "hsl(210, 100%, 50%)" // Azul
     },
     done: {
       label: "Completas",
-      color: "hsl(120, 100%, 50%)", // Verde
+      color: "hsl(120, 100%, 50%)" // Verde
     },
     cancelled: {
       label: "Canceladas",
-      color: "hsl(0, 100%, 50%)", // Rojo
-    },
+      color: "hsl(0, 100%, 50%)" // Rojo
+    }
   };
 
   return (
     <div>
       <div className="flex flex-col md:flex-row items-center justify-between gap-5 mb-10">
-        <Title>Dashboard CIC</Title>
+        <Title className="uppercase">Dashboard {`${group}`}</Title>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -58,11 +62,18 @@ const DashboardCICPage = async () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/dashboard/groups/cic">CIC</BreadcrumbLink>
+              <BreadcrumbLink
+                href={`/dashboard/groups/${group}`}
+                className="uppercase"
+              >
+                {group}
+              </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Dashboard CIC</BreadcrumbPage>
+              <BreadcrumbPage>
+                Dashboard <span className="uppercase">{group}</span>
+              </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -78,12 +89,12 @@ const DashboardCICPage = async () => {
           features={[
             {
               description: "Total de investigaciones",
-              value: totalInvestigations.data.length,
+              value: totalInvestigations.data.length
             },
             {
               description: "Investigaciones en progreso",
-              value: investigationsInProgressResponse.data.length,
-            },
+              value: investigationsInProgressResponse.data.length
+            }
           ]}
         />
         <RadialChart
@@ -96,12 +107,12 @@ const DashboardCICPage = async () => {
           features={[
             {
               description: "Total de investigaciones",
-              value: totalInvestigations.data.length,
+              value: totalInvestigations.data.length
             },
             {
               description: "Investigaciones canceladas",
-              value: investigationsCancelledResponse.data.length,
-            },
+              value: investigationsCancelledResponse.data.length
+            }
           ]}
         />
         <RadialChart
@@ -114,12 +125,12 @@ const DashboardCICPage = async () => {
           features={[
             {
               description: "Total de investigaciones",
-              value: totalInvestigations.data.length,
+              value: totalInvestigations.data.length
             },
             {
               description: "Investigaciones completas",
-              value: investigationsCompletedResponse.data.length,
-            },
+              value: investigationsCompletedResponse.data.length
+            }
           ]}
         />
       </div>
@@ -127,4 +138,4 @@ const DashboardCICPage = async () => {
   );
 };
 
-export default DashboardCICPage;
+export default DashboardGroupPage;

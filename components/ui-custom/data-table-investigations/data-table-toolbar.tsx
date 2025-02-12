@@ -1,22 +1,24 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Table } from "@tanstack/react-table";
+import {useState, useEffect} from "react";
+import {Table} from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { DataTableViewOptions } from "./data-table-view-options";
-import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
+import {DataTableViewOptions} from "./data-table-view-options";
+import {DataTableFacetedFilter} from "./data-table-faceted-filter";
 
-import { getAllInvestigationsTypes } from "@/actions/investigations/get-all-investigations-types";
-import { formatInvestigationTypes, statuses } from "./data";
+import {getAllInvestigationsTypes} from "@/actions/investigations/get-all-investigations-types";
+import {formatInvestigationTypes, statuses} from "./data";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+  group: string;
 }
 
 export function DataTableToolbar<TData>({
   table,
+  group
 }: DataTableToolbarProps<TData>) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [investigationTypes, setInvestigationTypes] = useState<any[]>([]);
@@ -76,7 +78,7 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      <DataTableViewOptions table={table} group={group} />
     </div>
   );
 }
