@@ -1,28 +1,34 @@
 import Link from "next/link";
 
-import { getInvestigationsByGroup } from "@/actions/investigations/get-investigations-by-group";
+import {getInvestigationsByGroup} from "@/actions/investigations/get-investigations-by-group";
 
-import { Title } from "@/components/ui-custom/title";
+import {Title} from "@/components/ui-custom/title";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator,
+  BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
 
-import { Button } from "@/components/ui/button";
-import { RenderDataTable } from "@/components/ui-custom/data-table-investigations/render-data-table";
+import {Button} from "@/components/ui/button";
+import {RenderDataTable} from "@/components/ui-custom/data-table-investigations/render-data-table";
 
-export default async function InvestigationsPage() {
-  const group = "cic";
-  const { data } = await getInvestigationsByGroup({ group });
+export default async function InvestigationsPage({
+  params
+}: {
+  params: Promise<{group: string}>;
+}) {
+  const {group} = await params;
+  const {data} = await getInvestigationsByGroup({group});
 
   return (
     <div>
       <div className="flex flex-col md:flex-row items-center justify-between gap-5 mb-10">
-        <Title>Investigaciones CIC</Title>
+        <Title>
+          Investigaciones <span className="uppercase">{group}</span>
+        </Title>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -30,7 +36,9 @@ export default async function InvestigationsPage() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Investigaciones CIC</BreadcrumbPage>
+              <BreadcrumbPage>
+                Investigaciones <span className="uppercase">{group}</span>
+              </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -43,7 +51,7 @@ export default async function InvestigationsPage() {
             No hay investigaciones
           </p>
           <Button asChild>
-            <Link href="/dashboard/investigations/new?group=cic">
+            <Link href={`/dashboard/investigations/new?group=${group}`}>
               Nueva investigación
             </Link>
           </Button>

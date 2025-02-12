@@ -1,10 +1,14 @@
+/* eslint-disable @next/next/no-img-element */
+
 "use client";
 
-import { Title } from "@/components/ui-custom/title";
+import {useEffect} from "react";
+import {redirect} from "next/navigation";
 
-import { InvestigationWithDetails } from "@/lib/db/schema";
-import { cn } from "@/lib/utils";
-import { dateFormat } from "@/helpers/dates";
+import {useAuth} from "@/hooks/use-auth";
+import {InvestigationWithDetails} from "@/lib/db/schema";
+import {cn} from "@/lib/utils";
+import {dateFormat} from "@/helpers/dates";
 import {
   Object,
   People,
@@ -12,7 +16,7 @@ import {
   RecoveredObject,
   SecuredDrug,
   SocialNetwork,
-  Vehicle,
+  Vehicle
 } from "@/types/investigation";
 import {
   Table,
@@ -20,7 +24,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@/components/ui/table";
 
 interface InvestigationDocumentProps {
@@ -32,8 +36,10 @@ interface InvestigationDocumentProps {
 export const InvestigationDocument = ({
   data,
   contentRef,
-  className,
+  className
 }: InvestigationDocumentProps) => {
+  const {auth} = useAuth();
+
   // Convertir los folios de la llamada a un array
   const callFolios = data.investigation.callFolios
     ? JSON.parse(data.investigation.callFolios)
@@ -78,6 +84,19 @@ export const InvestigationDocument = ({
   const securedObjects = data.investigation.securedObjects
     ? JSON.parse(data.investigation.securedObjects)
     : [];
+
+  useEffect(() => {
+    const userModules = JSON.parse(auth?.modules || "[]");
+    // Validamos el acceso
+    if (
+      auth?.id !== data.createdBy.id &&
+      auth?.role !== "admin" &&
+      !userModules.includes(data.investigation.group)
+    ) {
+      redirect("/dashboard/not-access");
+    }
+  }, [auth?.id, auth?.role, auth?.modules, data]);
+
   return (
     <div
       id="investigationPdf"

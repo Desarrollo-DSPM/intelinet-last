@@ -1,27 +1,28 @@
-import { getInvestigationsById } from "@/actions/investigations/get-investigation-by-id";
-import { EditInvestigationForm } from "@/components/ui-custom/forms/edit-investigation/edit-investigation";
-import { Title } from "@/components/ui-custom/title";
+import {getInvestigationsById} from "@/actions/investigations/get-investigation-by-id";
+import {EditInvestigationForm} from "@/components/ui-custom/forms/edit-investigation/edit-investigation";
+import {Title} from "@/components/ui-custom/title";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator,
+  BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
-import { redirect } from "next/navigation";
+import {redirect} from "next/navigation";
 
 export default async function InvestigationsPage({
-  params,
+  params
 }: {
-  params: { investigationId: string };
+  params: Promise<{investigationId: string; group: string}>;
 }) {
-  const { data } = await getInvestigationsById({
-    id: Number(params.investigationId),
+  const {investigationId, group} = await params;
+  const {data} = await getInvestigationsById({
+    id: Number(investigationId)
   });
 
   if (!data) {
-    redirect("/dashboard/groups/uap/investigations");
+    redirect(`/dashboard/groups/${group}/investigations`);
   }
 
   return (
@@ -35,7 +36,9 @@ export default async function InvestigationsPage({
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/dashboard/groups/uap/investigations">
+              <BreadcrumbLink
+                href={`/dashboard/groups/${group}/investigations`}
+              >
                 Investigaciones
               </BreadcrumbLink>
             </BreadcrumbItem>

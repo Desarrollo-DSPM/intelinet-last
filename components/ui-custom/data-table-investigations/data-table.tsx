@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import {useState, useEffect} from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,7 +13,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable,
+  useReactTable
 } from "@tanstack/react-table";
 
 import {
@@ -22,20 +22,22 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@/components/ui/table";
 
-import { DataTablePagination } from "./data-table-pagination";
-import { DataTableToolbar } from "./data-table-toolbar";
+import {DataTablePagination} from "./data-table-pagination";
+import {DataTableToolbar} from "./data-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  group: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  group
 }: DataTableProps<TData, TValue>) {
   const [isMounted, setIsMounted] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
@@ -50,7 +52,7 @@ export function DataTable<TData, TValue>({
       sorting,
       columnVisibility,
       rowSelection,
-      columnFilters,
+      columnFilters
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
@@ -62,7 +64,7 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
+    getFacetedUniqueValues: getFacetedUniqueValues()
   });
 
   useEffect(() => {
@@ -75,7 +77,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4 mt-2 w-full">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} group={group} />
       <div className="rounded-md border w-[calc(100vw-38px)] xl:w-full">
         <Table>
           <TableHeader>
