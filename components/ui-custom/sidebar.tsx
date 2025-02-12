@@ -1,23 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import {usePathname} from "next/navigation";
 
-import { useAuth } from "@/hooks/use-auth";
-import { cn } from "@/lib/utils";
+import {useAuth} from "@/hooks/use-auth";
+import {cn} from "@/lib/utils";
 import {
   Building2,
   CircleDot,
   Folder,
   GitBranch,
   House,
-  Users,
+  Users
 } from "lucide-react";
 
-import { Logo } from "@/components/ui-custom/logo";
+import {Logo} from "@/components/ui-custom/logo";
 
 export const Sidebar = () => {
-  const { auth, isOpenMenu, setIsOpenMenu } = useAuth();
+  const {auth, isOpenMenu, setIsOpenMenu} = useAuth();
   const pathname = usePathname();
 
   // Mapa de navegación dinámico
@@ -26,49 +26,91 @@ export const Sidebar = () => {
       label: "Inicio",
       href: "/dashboard",
       icon: House,
-      visible: true, // Siempre visible
+      visible: true // Siempre visible
     },
     {
       label: "Organigrama",
       href: "/dashboard/organigrama",
       icon: GitBranch,
-      visible: true, // Siempre visible
+      visible: true // Siempre visible
     },
     {
       label: "Usuarios",
       href: "/dashboard/admin/users",
       icon: Users,
       section: "Admin",
-      visible: auth?.role === "admin", // Solo para admin
+      visible: auth?.role === "admin" // Solo para admin
     },
     {
       label: "Departamentos",
       href: "/dashboard/admin/departments",
       icon: Building2,
       section: "Admin",
-      visible: auth?.role === "admin", // Solo para admin
+      visible: auth?.role === "admin" // Solo para admin
     },
     {
       label: "Investigaciones",
       href: "/dashboard/admin/investigations",
       icon: Folder,
       section: "Coordinación de inteligencia",
-      visible: auth?.role === "admin", // Solo para admin
-    },
-    {
-      label: "UAP",
-      href: "/dashboard/groups/uap",
-      icon: CircleDot,
-      section: "Grupos especiales",
-      visible: auth?.role === "admin" || auth?.modules.includes("uap"), // Admin o módulo UAP
+      visible: auth?.role === "admin" // Solo para admin
     },
     {
       label: "CIC",
       href: "/dashboard/groups/cic",
       icon: CircleDot,
       section: "Grupos especiales",
-      visible: auth?.role === "admin" || auth?.modules.includes("cic"), // Admin o módulo CIC
+      visible: auth?.role === "admin" || auth?.modules.includes("cic") // Admin o módulo CIC
     },
+    {
+      label: "GAPV",
+      href: "/dashboard/groups/gapv",
+      icon: CircleDot,
+      section: "Grupos especiales",
+      visible: auth?.role === "admin" || auth?.modules.includes("gapv") // Admin o módulo GAPV
+    },
+    {
+      label: "UAP",
+      href: "/dashboard/groups/uap",
+      icon: CircleDot,
+      section: "Grupos especiales",
+      visible: auth?.role === "admin" || auth?.modules.includes("uap") // Admin o módulo UAP
+    },
+    {
+      label: "UC",
+      href: "/dashboard/groups/uc",
+      icon: CircleDot,
+      section: "Grupos especiales",
+      visible: auth?.role === "admin" || auth?.modules.includes("uc") // Admin o módulo UC
+    },
+    {
+      label: "UAR",
+      href: "/dashboard/groups/uar",
+      icon: CircleDot,
+      section: "Grupos especiales",
+      visible: auth?.role === "admin" || auth?.modules.includes("uar") // Admin o módulo UAR
+    },
+    {
+      label: "UEDG",
+      href: "/dashboard/groups/uedg",
+      icon: CircleDot,
+      section: "Grupos especiales",
+      visible: auth?.role === "admin" || auth?.modules.includes("uedg") // Admin o módulo UEDG
+    },
+    {
+      label: "UIIE",
+      href: "/dashboard/groups/uiie",
+      icon: CircleDot,
+      section: "Grupos especiales",
+      visible: auth?.role === "admin" || auth?.modules.includes("uiie") // Admin o módulo UIIE
+    },
+    {
+      label: "UIP",
+      href: "/dashboard/groups/uip",
+      icon: CircleDot,
+      section: "Grupos especiales",
+      visible: auth?.role === "admin" || auth?.modules.includes("uip") // Admin o módulo UIP
+    }
   ];
 
   // Agrupa las secciones para renderizar
@@ -98,13 +140,13 @@ export const Sidebar = () => {
                     {section}
                   </li>
                 )}
-                {items.map(({ label, href, icon: Icon }) => (
+                {items.map(({label, href, icon: Icon}) => (
                   <li key={href}>
                     <Link
                       href={href}
                       className={cn(
                         "text-sm flex items-center gap-4 py-2 px-4 mb-1 rounded-lg hover:bg-secondary transition-colors duration-300",
-                        pathname === href && "bg-secondary font-medium"
+                        pathname.startsWith(href) && "bg-secondary font-medium"
                       )}
                     >
                       <Icon className="h-4 w-4" />

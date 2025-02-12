@@ -30,8 +30,7 @@ export const signIn = async (values: z.infer<typeof formSchemaLogin>) => {
     if (!isPasswordValid) {
       return {
         response: "error",
-        message:
-          "Correo electrónico o contraseña no válidos. Por favor, inténtalo de nuevo."
+        message: "Datos no válidos. Por favor, inténtalo de nuevo."
       };
     }
 

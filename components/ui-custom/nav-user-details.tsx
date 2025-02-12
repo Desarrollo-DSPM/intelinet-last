@@ -1,16 +1,16 @@
 "use client";
 
-import { User } from "@/lib/db/schema";
-import { cn } from "@/lib/utils";
-import { Info, KeyRound, ScanEye } from "lucide-react";
+import {User} from "@/lib/db/schema";
+import {cn} from "@/lib/utils";
+import {Info, KeyRound, ScanEye} from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import {usePathname} from "next/navigation";
 
 interface NavUserDetailsProps {
   data: User;
 }
 
-export const NavUserDetails = ({ data }: NavUserDetailsProps) => {
+export const NavUserDetails = ({data}: NavUserDetailsProps) => {
   const pathname = usePathname();
 
   return (
@@ -52,7 +52,7 @@ export const NavUserDetails = ({ data }: NavUserDetailsProps) => {
             )}
           >
             <ScanEye className="w-4 h-4 mr-3" />
-            Acceso a módulos
+            Acceso a módulos de grupos especiales
           </Link>
         </li>
       </ul>
