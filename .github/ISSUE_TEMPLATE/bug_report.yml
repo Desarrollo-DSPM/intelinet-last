@@ -1,5 +1,5 @@
-name: Bug Report
-description: File a bug report.
+name: Bug
+description: Presenta un informe de un error.
 title: "[Bug]: "
 labels: ["bug"]
 projects: ["intelinet-last"]

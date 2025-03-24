@@ -1,0 +1,14 @@
+name: Feature
+description: Idea o función para el proyecto.
+title: "[Feature]: "
+labels: ["enhancement"]
+projects: ["intelinet-last"]
+assignees:
+  - octocat
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Quien propone la función o mejora
+      description: Nombre de la persona o usuario ha propuesto la mejora.
+      placeholder: Ej. Jorge Trejo
