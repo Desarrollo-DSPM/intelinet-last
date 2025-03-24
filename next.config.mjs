@@ -4,8 +4,9 @@ const nextConfig = {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.
     ignoreDuringBuilds: true
-  },
-  basePath: "/intelinet-dev"
+  }
+  // basePath: "/intelinet-dev",
+  // assetPrefix: "/intelinet-dev"
 };
 
 export default nextConfig;
