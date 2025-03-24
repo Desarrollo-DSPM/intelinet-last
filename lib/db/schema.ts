@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import {relations} from "drizzle-orm";
 import {
   mysqlTable,
   varchar,
@@ -6,7 +6,7 @@ import {
   timestamp,
   int,
   tinyint,
-  date,
+  date
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
@@ -14,37 +14,37 @@ export const users = mysqlTable("users", {
   departmentId: int("department_id")
     .notNull()
     .references(() => departments.id),
-  name: varchar("name", { length: 100 }),
-  lastname: varchar("lastname", { length: 100 }),
-  username: varchar("username", { length: 100 }).notNull().unique(),
+  name: varchar("name", {length: 100}),
+  lastname: varchar("lastname", {length: 100}),
+  username: varchar("username", {length: 100}).notNull().unique(),
   employeeNumber: int("employee_number").notNull().unique(),
-  email: varchar("email", { length: 255 }).notNull().unique(),
+  email: varchar("email", {length: 255}).notNull().unique(),
   password: text("password").notNull(),
-  role: varchar("role", { length: 20 }).notNull().default("default"),
+  role: varchar("role", {length: 20}).notNull().default("default"),
   modules: text("modules").notNull(),
-  image: varchar("image", { length: 255 }),
+  image: varchar("image", {length: 255}),
   dateOfBirth: timestamp("date_of_birth"),
   dateOfEntry: date("date_of_entry").notNull(),
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
-  isActive: tinyint("is_active").default(1),
+  isActive: tinyint("is_active").default(1)
 });
 
 export const departments = mysqlTable("departments", {
   id: int("id").primaryKey().autoincrement(),
-  name: varchar("name", { length: 100 }),
+  name: varchar("name", {length: 100}),
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
-  isActive: tinyint("is_active").default(1),
+  isActive: tinyint("is_active").default(1)
 });
 
-export const userRelations = relations(users, ({ one, many }) => ({
+export const userRelations = relations(users, ({one, many}) => ({
   department: one(departments, {
     fields: [users.departmentId],
-    references: [departments.id],
+    references: [departments.id]
   }),
   investigations: many(investigations),
-  investigationsSupport: many(investigations),
+  investigationsSupport: many(investigations)
 }));
 
 export const investigations = mysqlTable("investigations", {
@@ -52,16 +52,16 @@ export const investigations = mysqlTable("investigations", {
   userId: int("user_id")
     .notNull()
     .references(() => users.id),
-  group: varchar("group", { length: 255 }).notNull(),
+  group: varchar("group", {length: 255}).notNull(),
   supportUserId: int("support_user_id").references(() => users.id),
-  district: varchar("district", { length: 255 }).notNull(),
+  district: varchar("district", {length: 255}).notNull(),
   investigationTypeId: int("investigation_type_id")
     .notNull()
     .references(() => investigationsTypes.id),
-  investigationDate: varchar("investigation_date", { length: 50 }).notNull(),
-  location: varchar("location", { length: 255 }).notNull(),
-  physicalVictim: varchar("physical_victim", { length: 255 }),
-  moralVictim: varchar("moral_victim", { length: 255 }),
+  investigationDate: varchar("investigation_date", {length: 50}).notNull(),
+  location: varchar("location", {length: 255}).notNull(),
+  physicalVictim: varchar("physical_victim", {length: 255}),
+  moralVictim: varchar("moral_victim", {length: 255}),
   callFolios: text("call_folios"),
   iphFolios: text("iph_folios"),
   victimInv: int("victim_inv").default(0),
@@ -90,12 +90,12 @@ export const investigations = mysqlTable("investigations", {
   photographicSeries: int("photographic_series").default(0),
   mapUAT: int("map_uat").default(0),
   arrestOperationLocation: varchar("arrest_operation_location", {
-    length: 255,
+    length: 255
   }),
   arrestOperationDistrict: varchar("arrest_operation_district", {
-    length: 255,
+    length: 255
   }),
-  arrestOperationDate: varchar("arrest_operation_date", { length: 50 }).default(
+  arrestOperationDate: varchar("arrest_operation_date", {length: 50}).default(
     ""
   ),
   personsArrested: text("persons_arrested"),
@@ -112,43 +112,53 @@ export const investigations = mysqlTable("investigations", {
   securedObjects: text("secured_objects"),
   informativeSheet: int("informative_sheet").default(0),
   officesMP: int("offices_mp").default(0),
-  deliveryDate: varchar("delivery_date", { length: 50 }),
-  deliveryHour: varchar("delivery_hour", { length: 50 }),
-  status: varchar("status", { length: 255 }).default("in-progress"),
+  deliveryDate: varchar("delivery_date", {length: 50}),
+  deliveryHour: varchar("delivery_hour", {length: 50}),
+  status: varchar("status", {length: 255}).default("in-progress"),
   shared: tinyint("shared").default(0),
   createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull()
 });
 
-export const investigationsRelations = relations(investigations, ({ one }) => ({
+export const investigationsRelations = relations(investigations, ({one}) => ({
   user: one(users, {
     fields: [investigations.userId],
-    references: [users.id],
+    references: [users.id]
   }),
   supportUser: one(users, {
     fields: [investigations.supportUserId],
-    references: [users.id],
+    references: [users.id]
   }),
   investigationsTypes: one(investigationsTypes, {
     fields: [investigations.investigationTypeId],
-    references: [investigationsTypes.id],
-  }),
+    references: [investigationsTypes.id]
+  })
 }));
 
 export const investigationsTypes = mysqlTable("investigations_types", {
   id: int("id").primaryKey().autoincrement(),
-  name: varchar("name", { length: 255 }).notNull().unique(),
+  name: varchar("name", {length: 255}).notNull().unique(),
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
-  isActive: tinyint("is_active").default(1),
+  isActive: tinyint("is_active").default(1)
 });
 
 export const investigationsTypesRelations = relations(
   investigationsTypes,
-  ({ many }) => ({
-    investigations: many(investigations),
+  ({many}) => ({
+    investigations: many(investigations)
   })
 );
+
+export const gangs = mysqlTable("gangs", {
+  id: int("id").primaryKey().autoincrement(),
+  name: varchar("name", {length: 100}).notNull(),
+  location: varchar("location", {length: 255}).notNull(),
+  members: int("members").notNull(),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
+  isActive: tinyint("is_active").default(1)
+});
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -173,3 +183,6 @@ export type InvestigationWithDetails = {
     "id" | "employeeNumber" | "name" | "lastname" | "email" | "modules"
   > | null;
 };
+
+export type Gang = typeof gangs.$inferSelect;
+export type NewGang = typeof gangs.$inferInsert;
